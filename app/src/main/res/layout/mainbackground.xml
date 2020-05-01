@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_1_f">
+
+    <com.example.phoneui.VideoPlay
+        android:id="@+id/VideoPlayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/setting"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:text=" "
+        android:textColor="#FFFFFF"
+        android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/help"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="340dp"
+        android:text=" "
+        android:textColor="#FFFFFF"
+        android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/groundtalk"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginLeft="83dp"
+        android:layout_marginTop="485dp"
+        android:background="@drawable/roundbutton1_white" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="500dp"
+        android:id="@+id/bottom_1"
+        android:background="@drawable/bottom_1"/>
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/set_icon"
+        android:background="@drawable/set_icon"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Hello"
+        android:text="@string/hello"
+        android:layout_centerHorizontal="true"
+        android:textSize="40sp"/>
+
+</RelativeLayout>

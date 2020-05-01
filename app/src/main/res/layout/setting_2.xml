@@ -1,0 +1,89 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/set_bg">
+
+    <Button
+        android:id="@+id/settingbtn_1"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="80dp"
+        android:layout_height="78dp"
+        android:layout_marginLeft="110dp"
+        android:layout_marginTop="175dp"
+        android:background="@drawable/syncset" />
+
+    <Button
+        android:id="@+id/settingbtn_2"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="80dp"
+        android:layout_height="78dp"
+        android:layout_marginLeft="230dp"
+        android:layout_marginTop="175dp"
+        android:background="@drawable/appearset" />
+
+    <Button
+        android:id="@+id/settingbtn_3"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="80dp"
+        android:layout_height="78dp"
+        android:layout_marginLeft="110dp"
+        android:layout_marginTop="275dp"
+        android:background="@drawable/soundset_s" />
+
+    <Button
+        android:id="@+id/settingbtn_4"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="80dp"
+        android:layout_height="78dp"
+        android:layout_marginLeft="230dp"
+        android:layout_marginTop="275dp"
+        android:background="@drawable/advset" />
+
+    <Button
+        android:id="@+id/settingbtn_5"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="152dp"
+        android:layout_height="34dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="518dp"
+        android:background="@drawable/settingbtn_8" />
+
+    <Button
+        android:id="@+id/settingbtn_6"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="152dp"
+        android:layout_height="34dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="560dp"
+        android:background="@drawable/settingbtn_9" />
+
+    <Button
+        android:id="@+id/settingbtn_7"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="80dp"
+        android:layout_height="78dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/settingback" />
+
+    <TextView
+        android:id="@+id/abouts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="@string/abouts"
+        android:textColor="#FFFFFF"
+        android:textSize="35sp" />
+
+    <TextView
+        android:id="@+id/set_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" NULL "
+        android:textColor="#FFFFFF"
+        android:textSize="65sp"
+        android:layout_centerHorizontal="true"
+        />
+
+</RelativeLayout>

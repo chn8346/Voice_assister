@@ -1,0 +1,39 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2F578B">
+
+    <Button
+        android:id="@+id/back_button"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="5dp"
+        android:background="@drawable/back_button_1" />
+
+    <Button
+        android:id="@+id/setting"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="91dp"
+        android:layout_marginLeft="315dp"
+        android:background="@drawable/button_3" />
+
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="395dp"
+        android:layout_marginTop="100dp" />
+
+<Button
+    android:id="@+id/button1"
+    style="?android:attr/borderlessButtonStyle"
+    android:layout_width="226dp"
+    android:layout_height="193dp"
+    android:layout_marginLeft="95dp"
+    android:layout_marginTop="520dp"
+    android:background="@drawable/button2"
+    android:textAllCaps="false" />
+
+</RelativeLayout>

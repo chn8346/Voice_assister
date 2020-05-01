@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">语音助手</string>
+    <string name="about_author">合肥工业大学宣城校区\n电气与自动化系\n语音助手项目组\n\n指导老师:谭琦\nUI设计制作:徐帆\n界面和优化：范春晖\n核心算法实现：张付贵\n其他成员：潘志  刘雨欣\n\n版本:0.5.0 测试</string>
+    <string name="user_help">使用说明：\n1.长按说话按钮可直\n接命令助手\n2.点击说话按钮可进入\n带提示页面的语音控制\n界面\n3.点击左上角设置进行\n软件配置</string>
+    <string name="hello">Can I help you ?</string>
+    <string name="abouts">关于</string>
+</resources>
