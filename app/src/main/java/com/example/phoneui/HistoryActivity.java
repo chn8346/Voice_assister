@@ -213,7 +213,7 @@ public class HistoryActivity extends AppCompatActivity {
                 //finish();
 
                 ass.init_listener();
-                toast.show(HistoryActivity.this, "请说出你的命令", toast.short_time_len);
+                //toast.show(HistoryActivity.this, "请说出你的命令", toast.short_time_len);
 
                 // 执行接口
                 String listenResult = ass.listen_result();

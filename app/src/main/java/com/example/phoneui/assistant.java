@@ -11,18 +11,19 @@ import com.iflytek.cloud.SpeechUtility;
 
 public class assistant {
     public Context context_;
+    public Toast_ toast = new Toast_();
 
     public assistant(boolean is_init_utility, Context context)
     {
         context_ = context;
-        Toast_ toast = new Toast_();
+
         if(is_init_utility)
         {
-            toast.show(context, "init utility fail", 700);
+            toast.show(context, "init utility fail", 2000);
         }
         else
         {
-            toast.show(context, "init utility success", 1000);
+            toast.show(context, "init utility success", 2000 );
         }
     }
     public String assistant_main()
@@ -38,7 +39,17 @@ public class assistant {
 
     public void init_listener()
     {
-        ;
+        InitListener mInitListener = new InitListener() {
+            @Override
+            public void onInit(int i) {
+                
+            }
+        };
+        SpeechRecognizer mIat = SpeechRecognizer.createRecognizer(context_, mInitListener);
+        if(mIat == null)
+        {
+            toast.show(context_, "init recognizer fail", toast.short_time_len);
+        }
     }
 
     public String listen_result()
