@@ -20,6 +20,7 @@ public class assistant {
     private boolean testMode = true;
     private StringBuffer listen_ = new StringBuffer();
     private String cls_str = "";
+    private speaker speech_speaker;
 
     // 构造函数
     public assistant(boolean is_init_utility, Context context)
@@ -35,6 +36,8 @@ public class assistant {
 
             // 状态判断的变量，如果state后续中小于某个值就会无法执行
             state = state + 1;
+
+            speech_speaker = new speaker(context_);
         }
         else
         {
@@ -138,6 +141,8 @@ public class assistant {
                 cls_str = classify(listen_.toString());
 
                 excute(cls_str);
+
+                speech_speaker.doSpeech(listen_.toString());
             }
 
             @Override
