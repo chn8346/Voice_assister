@@ -17,6 +17,7 @@ public class globalstate extends Application{
     public int widthSize = 1080;
 
     public boolean startAssistant = false;
+    public boolean initAssistantSuccess = false;
 
     int SetPos = 4;
 

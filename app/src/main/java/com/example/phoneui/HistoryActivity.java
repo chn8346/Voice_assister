@@ -41,15 +41,12 @@ public class HistoryActivity extends AppCompatActivity {
         // 讯飞接口初始化
         SpeechUtility.createUtility(this, "appid=5dd651ed");
         SpeechUtility su = SpeechUtility.getUtility();
+        gl.initAssistantSuccess = (su != null);
         final Toast_ toast = new Toast_();
-        //toast.show(HistoryActivity.this, "Utility Trying Start", toast.short_time_len);
-        if(su == null)
-            toast.show(HistoryActivity.this, "Utility Start Failed", toast.short_time_len);
+        final assistant ass = new assistant((su != null), HistoryActivity.this);
 
         // 动态背景
         initView();
-
-
 
         //dynamic adjust
         //控件大小位置调整
@@ -65,7 +62,6 @@ public class HistoryActivity extends AppCompatActivity {
         Button talk = (Button) findViewById(R.id.groundtalk);
         Button set = (Button) findViewById(R.id.bottom_1);
         ImageView imag = (ImageView) findViewById(R.id.set_icon);
-
 
         // pos adjust
 
@@ -213,8 +209,15 @@ public class HistoryActivity extends AppCompatActivity {
                 Vibrator vbr = (Vibrator) HistoryActivity.this.getSystemService(VIBRATOR_SERVICE);
                 assert vbr != null;
                 vbr.vibrate(300);
-                toast.show(HistoryActivity.this, "未开放的功能", 1000);
+                //toast.show(HistoryActivity.this, "未开放的功能", 1000);
                 //finish();
+
+                ass.init_listener();
+                toast.show(HistoryActivity.this, "请说出你的命令", toast.short_time_len);
+
+                // 执行接口
+                String listenResult = ass.listen_result();
+                ass.excute(listenResult);
             }
         });
 
