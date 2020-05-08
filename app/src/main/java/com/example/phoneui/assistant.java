@@ -16,21 +16,32 @@ public class assistant {
     public Context context_;
     public Toast_ toast = new Toast_();
     public SpeechRecognizer mIat;
+    private int state = 0;
 
+    // 构造函数
     public assistant(boolean is_init_utility, Context context)
     {
         context_ = context;
 
+        // 状态判断的变量，如果state后续中小于某个值就会无法执行
+        state = 0;
+
         if(is_init_utility)
         {
             toast.show(context, "init utility success", 1000);
+
+            // 状态判断的变量，如果state后续中小于某个值就会无法执行
+            state = state + 1;
         }
         else
         {
             toast.show(context, "init utility fail", 1000 );
         }
     }
-    public String assistant_main()
+
+
+    // 统一构造封装的听写方法
+    public String assistant_listen()
     {
         init_listener();
 
@@ -41,6 +52,8 @@ public class assistant {
         return result;
     }
 
+
+    // 听写初始化
     public void init_listener()
     {
         InitListener mInitListener = new InitListener() {
@@ -56,6 +69,9 @@ public class assistant {
         }
         else
         {
+            // 状态判断的变量，如果state后续中小于某个值就会无法执行
+            state = state + 10;
+
             //设置语法ID和 SUBJECT 为空，以免因之前有语法调用而设置了此参数；或直接清空所有参数，具体可参考 DEMO 的示例。
             mIat.setParameter( SpeechConstant.CLOUD_GRAMMAR, null );
             mIat.setParameter( SpeechConstant.SUBJECT, null );
@@ -78,7 +94,18 @@ public class assistant {
         }
     }
 
+
+    // 获取听写结果
     public String listen_result()
+    {
+        String result = listen();
+        String classify_res = classify(result);
+        return "default";
+    }
+
+
+    // 获取听写的音频和文字
+    private String listen()
     {
         //监听器初始化
         RecognizerListener mRecogListener = new RecognizerListener() {
@@ -89,12 +116,12 @@ public class assistant {
 
             @Override
             public void onBeginOfSpeech() {
-
+                toast.show(context_, "请说话", toast.short_time_len);
             }
 
             @Override
             public void onEndOfSpeech() {
-
+                toast.show(context_, "录音结束", toast.short_time_len);
             }
 
             @Override
@@ -104,7 +131,7 @@ public class assistant {
 
             @Override
             public void onError(SpeechError speechError) {
-
+                toast.show(context_, "意外错误，请重试", toast.short_time_len);
             }
 
             @Override
@@ -116,13 +143,6 @@ public class assistant {
         //开始识别
         mIat.startListening(mRecogListener);
 
-
-
-        return "default";
-    }
-
-    private String listen()
-    {
         return "no_result";
     }
 
