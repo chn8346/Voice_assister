@@ -216,8 +216,7 @@ public class HistoryActivity extends AppCompatActivity {
                 //toast.show(HistoryActivity.this, "请说出你的命令", toast.short_time_len);
 
                 // 执行接口
-                String listenResult = ass.listen_result();
-                ass.excute(listenResult);
+                ass.listen_result();
             }
         });
 

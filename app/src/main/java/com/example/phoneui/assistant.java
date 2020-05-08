@@ -4,35 +4,34 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerListener;
 import com.iflytek.cloud.RecognizerResult;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechRecognizer;
-import com.iflytek.cloud.SpeechUtility;
 
 
 public class assistant {
-    public Context context_;
-    public Toast_ toast = new Toast_();
-    public SpeechRecognizer mIat;
+    private Context context_;
+    private Toast_ toast = new Toast_();
+    private SpeechRecognizer mIat;
     private int state = 0;
-    private boolean testMode = false;
-    private boolean trans_ok = false;
+    private boolean testMode = true;
+    private StringBuffer listen_ = new StringBuffer();
+    private String cls_str = "";
 
     // 构造函数
     public assistant(boolean is_init_utility, Context context)
     {
         context_ = context;
-        trans_ok = false;
+
         // 状态判断的变量，如果state后续中小于某个值就会无法执行
         state = 0;
 
         if(is_init_utility)
         {
-            toast.show(context, "init utility success", 1000);
+            //toast.show(context, "init utility success", 1000);
 
             // 状态判断的变量，如果state后续中小于某个值就会无法执行
             state = state + 1;
@@ -45,24 +44,22 @@ public class assistant {
 
 
     // 统一构造封装的听写方法
-    public String assistant_listen()
+    public void assistant_listen()
     {
-        trans_ok = false;
 
         init_listener();
 
-        String result = listen_result();
-
-        excute(result);
-
-        return result;
+        listen_result();
     }
 
 
     // 听写初始化
     public void init_listener()
     {
-        trans_ok = false;
+        if(state < 1) {
+            toast.show(context_, "初始化错误", toast.short_time_len);
+            return;
+        }
 
         InitListener mInitListener = new InitListener() {
             @Override
@@ -102,20 +99,15 @@ public class assistant {
         }
     }
 
-
-    // 获取听写结果
-    public String listen_result()
+    // 获取听写的音频和文字、分类
+    public void listen_result()
     {
-        String result = listen();
-        String classify_res = classify(result);
-        return classify_res;
-    }
 
+        if(state < 11) {
+            toast.show(context_, "初始化错误", toast.short_time_len);
+            return;
+        }
 
-    // 获取听写的音频和文字
-    private String listen()
-    {
-        final StringBuffer listen_ = new StringBuffer();
         listen_.setLength(0);
         //监听器初始化
         RecognizerListener mRecogListener = new RecognizerListener() {
@@ -127,7 +119,7 @@ public class assistant {
             @Override
             public void onBeginOfSpeech() {
                 toast.show(context_, "请说话", toast.short_time_len);
-                trans_ok = false;
+
             }
 
             @Override
@@ -135,12 +127,17 @@ public class assistant {
                 if(testMode)
                 {
                     if(listen_.length() > 1)
-                    toast.show(context_, listen_.append("-testMode").toString(), toast.short_time_len);
+                    toast.show(context_, listen_.append(" -testMode").toString(), 2*toast.short_time_len);
                 }
                 else {
-                    trans_ok = true;
-                    toast.show(context_, "录音结束", toast.short_time_len);
+                    toast.show(context_, "录音结束", 300);
                 }
+
+                //mIat.stopListening();
+
+                cls_str = classify(listen_.toString());
+
+                excute(cls_str);
             }
 
             @Override
@@ -175,13 +172,17 @@ public class assistant {
 
         //开始识别
         mIat.startListening(mRecogListener);
-        while(!trans_ok);
-        return listen_.toString();
     }
 
     private String classify(String words)
     {
-        toast.show(context_, words, toast.short_time_len);
+        if(!testMode)
+        {
+            Log.d("a____________a", "classify: start");
+            toast.show(context_, words + "-classify", toast.short_time_len);
+        }
+
+
         return "default";
     }
 
