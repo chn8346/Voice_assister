@@ -252,6 +252,7 @@ public class HistoryActivity extends AppCompatActivity {
         super.onRestart();
     }
 
+
     //防止锁屏或者切出的时候，音乐在播放
     @Override
     protected void onStop() {
