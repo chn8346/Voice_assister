@@ -13,18 +13,20 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechRecognizer;
 import com.iflytek.cloud.SpeechUtility;
 
+
 public class assistant {
-    private static final String TAG = "assistant__result:";
     public Context context_;
     public Toast_ toast = new Toast_();
     public SpeechRecognizer mIat;
     private int state = 0;
+    private boolean testMode = false;
+    private boolean trans_ok = false;
 
     // 构造函数
     public assistant(boolean is_init_utility, Context context)
     {
         context_ = context;
-
+        trans_ok = false;
         // 状态判断的变量，如果state后续中小于某个值就会无法执行
         state = 0;
 
@@ -45,6 +47,8 @@ public class assistant {
     // 统一构造封装的听写方法
     public String assistant_listen()
     {
+        trans_ok = false;
+
         init_listener();
 
         String result = listen_result();
@@ -58,6 +62,8 @@ public class assistant {
     // 听写初始化
     public void init_listener()
     {
+        trans_ok = false;
+
         InitListener mInitListener = new InitListener() {
             @Override
             public void onInit(int i) {
@@ -78,7 +84,7 @@ public class assistant {
             mIat.setParameter( SpeechConstant.CLOUD_GRAMMAR, null );
             mIat.setParameter( SpeechConstant.SUBJECT, null );
             //设置返回结果格式，目前支持json,xml以及plain 三种格式，其中plain为纯听写文本内容
-            mIat.setParameter(SpeechConstant.RESULT_TYPE, "json");
+            mIat.setParameter(SpeechConstant.RESULT_TYPE, "plain");
             //此处engineType为“cloud”
             mIat.setParameter( SpeechConstant.ENGINE_TYPE, "cloud");
             //设置语音输入语言，zh_cn为简体中文
@@ -87,7 +93,7 @@ public class assistant {
             mIat.setParameter(SpeechConstant.ACCENT, "mandarin");
             // 设置语音前端点:静音超时时间，单位ms，即用户多长时间不说话则当做超时处理
             //取值范围{1000～10000}
-            mIat.setParameter(SpeechConstant.VAD_BOS, "4000");
+            mIat.setParameter(SpeechConstant.VAD_BOS, "2000");
             //设置语音后端点:后端点静音检测时间，单位ms，即用户停止说话多长时间内即认为不再输入，
             //自动停止录音，范围{0~10000}
             mIat.setParameter(SpeechConstant.VAD_EOS, "1000");
@@ -102,13 +108,15 @@ public class assistant {
     {
         String result = listen();
         String classify_res = classify(result);
-        return "default";
+        return classify_res;
     }
 
 
     // 获取听写的音频和文字
     private String listen()
     {
+        final StringBuffer listen_ = new StringBuffer();
+        listen_.setLength(0);
         //监听器初始化
         RecognizerListener mRecogListener = new RecognizerListener() {
             @Override
@@ -119,11 +127,20 @@ public class assistant {
             @Override
             public void onBeginOfSpeech() {
                 toast.show(context_, "请说话", toast.short_time_len);
+                trans_ok = false;
             }
 
             @Override
             public void onEndOfSpeech() {
-                toast.show(context_, "录音结束", toast.short_time_len);
+                if(testMode)
+                {
+                    if(listen_.length() > 1)
+                    toast.show(context_, listen_.append("-testMode").toString(), toast.short_time_len);
+                }
+                else {
+                    trans_ok = true;
+                    toast.show(context_, "录音结束", toast.short_time_len);
+                }
             }
 
             @Override
@@ -132,11 +149,11 @@ public class assistant {
                 {
                     if(b)
                     {
-                        Log.d(TAG, recognizerResult.toString());
+                        listen_.append(recognizerResult.getResultString());
                     }
                     else
                     {
-                        Log.d(TAG, recognizerResult.toString());
+                        listen_.append(recognizerResult.getResultString());
                     }
                 }
                 else
@@ -158,12 +175,13 @@ public class assistant {
 
         //开始识别
         mIat.startListening(mRecogListener);
-
-        return "no_result";
+        while(!trans_ok);
+        return listen_.toString();
     }
 
     private String classify(String words)
     {
+        toast.show(context_, words, toast.short_time_len);
         return "default";
     }
 
