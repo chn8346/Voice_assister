@@ -2,6 +2,7 @@ package com.example.phoneui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
@@ -13,6 +14,7 @@ import com.iflytek.cloud.SpeechRecognizer;
 import com.iflytek.cloud.SpeechUtility;
 
 public class assistant {
+    private static final String TAG = "assistant__result:";
     public Context context_;
     public Toast_ toast = new Toast_();
     public SpeechRecognizer mIat;
@@ -126,7 +128,21 @@ public class assistant {
 
             @Override
             public void onResult(RecognizerResult recognizerResult, boolean b) {
-
+                if(recognizerResult != null)
+                {
+                    if(b)
+                    {
+                        Log.d(TAG, recognizerResult.toString());
+                    }
+                    else
+                    {
+                        Log.d(TAG, recognizerResult.toString());
+                    }
+                }
+                else
+                {
+                    ;
+                }
             }
 
             @Override
