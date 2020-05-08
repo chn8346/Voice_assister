@@ -1,17 +1,21 @@
 package com.example.phoneui;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerListener;
+import com.iflytek.cloud.RecognizerResult;
 import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechRecognizer;
 import com.iflytek.cloud.SpeechUtility;
 
 public class assistant {
     public Context context_;
     public Toast_ toast = new Toast_();
+    public SpeechRecognizer mIat;
 
     public assistant(boolean is_init_utility, Context context)
     {
@@ -45,7 +49,7 @@ public class assistant {
                 
             }
         };
-        SpeechRecognizer mIat = SpeechRecognizer.createRecognizer(context_, mInitListener);
+        mIat = SpeechRecognizer.createRecognizer(context_, mInitListener);
         if(mIat == null)
         {
             toast.show(context_, "init recognizer fail", toast.short_time_len);
@@ -76,6 +80,44 @@ public class assistant {
 
     public String listen_result()
     {
+        //监听器初始化
+        RecognizerListener mRecogListener = new RecognizerListener() {
+            @Override
+            public void onVolumeChanged(int i, byte[] bytes) {
+
+            }
+
+            @Override
+            public void onBeginOfSpeech() {
+
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+
+            }
+
+            @Override
+            public void onResult(RecognizerResult recognizerResult, boolean b) {
+
+            }
+
+            @Override
+            public void onError(SpeechError speechError) {
+
+            }
+
+            @Override
+            public void onEvent(int i, int i1, int i2, Bundle bundle) {
+
+            }
+        };
+
+        //开始识别
+        mIat.startListening(mRecogListener);
+
+
+
         return "default";
     }
 
