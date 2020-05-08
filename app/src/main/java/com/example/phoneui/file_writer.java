@@ -11,9 +11,9 @@ public class file_writer {
     private SharedPreferences reader = context_.getSharedPreferences(fileName, Context.MODE_PRIVATE);
     private SharedPreferences.Editor writer = reader.edit();
 
-    boolean init_ok = true;
+    private boolean init_ok = true;
 
-    public void file_writer()
+    public file_writer()
     {
         change_file(fileName);
     }
