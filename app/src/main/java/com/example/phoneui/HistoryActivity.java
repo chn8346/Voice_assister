@@ -2,6 +2,7 @@ package com.example.phoneui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,7 +37,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         // global state
         final globalstate gl = (globalstate)this.getApplication();
-        file_writer file_edit = new file_writer();
+        file_writer file_edit = new file_writer(this);
 
         // MSC init
         // 讯飞接口初始化
@@ -266,5 +267,10 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onStop() {
         vp.stopPlayback();
         super.onStop();
+    }
+
+    private void init_paraments()
+    {
+
     }
 }

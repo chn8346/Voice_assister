@@ -19,6 +19,8 @@ public class globalstate extends Application{
     public boolean startAssistant = false;
     public boolean initAssistantSuccess = false;
 
+    public String user_mode = "normal";
+
     int SetPos = 4;
 
     @Override

@@ -6,15 +6,16 @@ import android.content.SharedPreferences;
 
 public class file_writer {
     private Context context_;
-    private String fileName = "VoiceAssistantConfigData";
+    private String fileName = "vasConfigData";
 
-    private SharedPreferences reader = context_.getSharedPreferences(fileName, Context.MODE_PRIVATE);
-    private SharedPreferences.Editor writer = reader.edit();
+    private SharedPreferences reader;
+    private SharedPreferences.Editor writer;
 
     private boolean init_ok = true;
 
-    public file_writer()
+    public file_writer(Context context)
     {
+        context_ = context;
         change_file(fileName);
     }
 
@@ -22,8 +23,6 @@ public class file_writer {
     {
         fileName = filename;
         reader = context_.getSharedPreferences(fileName, Context.MODE_PRIVATE);
-        writer = reader.edit();
-        writer.apply();
 
         if(reader == null)
         {
@@ -33,6 +32,8 @@ public class file_writer {
 
     public void write(String key, String value)
     {
+        writer = reader.edit();
+        writer.apply();
         if(!init_ok)
         {
             return;
@@ -43,6 +44,8 @@ public class file_writer {
 
     public void write(String key, int value)
     {
+        writer = reader.edit();
+        writer.apply();
         if(!init_ok)
         {
             return;
@@ -53,6 +56,8 @@ public class file_writer {
 
     public void write(String key, boolean value)
     {
+        writer = reader.edit();
+        writer.apply();
         if(!init_ok)
         {
             return;
