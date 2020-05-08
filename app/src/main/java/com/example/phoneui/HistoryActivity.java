@@ -39,6 +39,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         // MSC init
         // 讯飞接口初始化
+        SpeechUtility.createUtility(this, "appid=5dd651ed");
         SpeechUtility su = SpeechUtility.getUtility();
         final Toast_ toast = new Toast_();
         //toast.show(HistoryActivity.this, "Utility Trying Start", toast.short_time_len);

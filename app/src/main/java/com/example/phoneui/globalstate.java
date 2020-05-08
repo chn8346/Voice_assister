@@ -24,7 +24,6 @@ public class globalstate extends Application{
     public void onCreate(){
         super.onCreate();
         Setting.setShowLog(true);
-        SpeechUtility.createUtility(this, "appid=5dd651ed");
     }
 
 }
