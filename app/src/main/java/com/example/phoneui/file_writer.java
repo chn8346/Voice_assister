@@ -67,7 +67,7 @@ public class file_writer {
         {
             return "";
         }
-        return reader.getString(key, "");
+        return reader.getString(key, v);
     }
 
     public int read(String key, int v)
@@ -76,7 +76,7 @@ public class file_writer {
         {
             return -1;
         }
-        return reader.getInt(key, 0);
+        return reader.getInt(key, v);
     }
 
     public boolean read(String key, boolean v)
@@ -85,7 +85,7 @@ public class file_writer {
         {
             return false;
         }
-        return reader.getBoolean(key, false);
+        return reader.getBoolean(key, v);
     }
 
 }
