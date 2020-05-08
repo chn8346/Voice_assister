@@ -36,6 +36,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         // global state
         final globalstate gl = (globalstate)this.getApplication();
+        file_writer file_edit = new file_writer();
 
         // MSC init
         // 讯飞接口初始化
@@ -44,6 +45,13 @@ public class HistoryActivity extends AppCompatActivity {
         gl.initAssistantSuccess = (su != null);
         final Toast_ toast = new Toast_();
         final assistant ass = new assistant((su != null), HistoryActivity.this);
+
+        //判断是否需要第一次初始化
+        if(file_edit.read("first_use", true))
+        {
+            Intent intent = new Intent("android.intent.action.INIT");
+            startActivity(intent);
+        }
 
         // 动态背景
         initView();
