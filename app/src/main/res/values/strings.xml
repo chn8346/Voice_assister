@@ -4,5 +4,5 @@
     <string name="user_help">使用说明：\n1.长按说话按钮可直\n接命令助手\n2.点击说话按钮可进入\n带提示页面的语音控制\n界面\n3.点击左上角设置进行\n软件配置</string>
     <string name="hello">Can I help you ?</string>
     <string name="abouts">关于</string>
-    <string name="welcome">欢迎使用语音助手\n长按或双击白色按钮以继续</string>
+    <string name="welcome">欢迎使用语音助手\n长按或点击白色按钮以继续</string>
 </resources>

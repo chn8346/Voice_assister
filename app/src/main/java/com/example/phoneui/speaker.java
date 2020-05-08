@@ -55,6 +55,7 @@ public class speaker {
             @Override
             public void onInit(int i) {
                 if (i != ErrorCode.SUCCESS) {
+                    Log.d("TAG______TAG", "onInit: 初始化失败,错误码："+i);
                     toast.show(context_,"初始化失败,错误码："+i, 700);
                 }
                 else {
@@ -107,9 +108,9 @@ public class speaker {
     // 发音方法
     public void doSpeech(String speech)
     {
-        if(state < 11)
+        if(state < 10)
         {
-            toast.show(context_, "初始化失败", 800);
+            toast.show(context_, "初始化失败"+state, 800);
         }
         else
         {
