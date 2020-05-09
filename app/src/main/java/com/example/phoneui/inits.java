@@ -12,7 +12,11 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class inits extends AppCompatActivity {
+    private Vibrator vbr = (Vibrator) inits.this.getSystemService(VIBRATOR_SERVICE);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,11 +25,10 @@ public class inits extends AppCompatActivity {
 
 
         // 全局变量
-        globalstate gl = (globalstate)this.getApplication();
+        final globalstate gl = (globalstate)this.getApplication();
         Toast_ toast = new Toast_();
-        file_writer file_edit = new file_writer(this);
+        final file_writer file_edit = new file_writer(this);
 
-        Vibrator vbr = (Vibrator) inits.this.getSystemService(VIBRATOR_SERVICE);
         assert vbr != null;
 
         speaker speech_speaker = new speaker(inits.this);
@@ -68,7 +71,7 @@ public class inits extends AppCompatActivity {
         *
         *   1、直接点按成功，说明是正常人
         *   2、直接点击进入会询问是否可以听见语音提示，是否可以说话，以此判断为聋哑人群
-        *   4、如果是长按进入，说明是失明或弱视群体。防止误触，正常人第一次进入这类主界面会提示长按可退出
+        *   3、如果是长按进入，说明是失明或弱视群体。防止误触，正常人第一次进入这类主界面会提示长按可退出
         *
         * */
 
@@ -76,15 +79,6 @@ public class inits extends AppCompatActivity {
         bt1.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                init_file();
-                // TODO user identify
-                init_user("normal");
-
-                Intent intent = new Intent("android.intent.action.MAIN");
-                startActivity(intent);
-
-                finish();
-
                 return false;
             }
         });
@@ -94,7 +88,7 @@ public class inits extends AppCompatActivity {
             public void onClick(View v) {
                 init_file();
                 // TODO user identify
-                init_user("normal");
+                init_user("normal", gl, file_edit);
 
                 Intent intent = new Intent("android.intent.action.MAIN");
                 startActivity(intent);
@@ -106,14 +100,7 @@ public class inits extends AppCompatActivity {
         bt2.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                init_file();
-                // TODO user identify
-                init_user("normal");
 
-                Intent intent = new Intent("android.intent.action.MAIN");
-                startActivity(intent);
-
-                finish();
 
                 return false;
             }
@@ -124,7 +111,7 @@ public class inits extends AppCompatActivity {
             public void onClick(View v) {
                 init_file();
                 // TODO user identify
-                init_user("normal");
+                init_user("normal", gl, file_edit);
 
                 Intent intent = new Intent("android.intent.action.MAIN");
                 startActivity(intent);
@@ -139,7 +126,13 @@ public class inits extends AppCompatActivity {
                 "请按住屏幕不松，找到震动最大的区域进入使用");
 
         // 震动引导
-        vbr.vibrate(100);
+
+    }
+
+    // 总配置方法
+    private void init_all(String user_classify, globalstate gl, file_writer file_edit)
+    {
+
     }
 
     // 配置文件初始化
@@ -149,9 +142,46 @@ public class inits extends AppCompatActivity {
     }
 
     // 根据反馈进行欢迎
-    private void init_user(String user_classify)
+    private void init_user(String user_classify, globalstate gl, file_writer file_edit)
     {
 
+        switch (user_classify)
+        {
+            case "normal":
+                file_edit.write(constr_share.user_mode, constr_share.k_user_mode_normal);
+                gl.user_mode = constr_share.k_user_mode_normal;
+                break;
+
+            case "deaf":
+                break;
+
+            case "can_not_speak":
+                break;
+
+            case "blind":
+            default:
+                // Defualt 最保险的做法，可以修改到其他场合
+                gl.user_mode = constr_share.k_user_mode_Blind;
+                file_edit.write(constr_share.user_mode, constr_share.k_user_mode_Blind);
+                break;
+        }
+    }
+
+    // 震动控制封装
+    void vibe_simple(int weight_1to100)
+    {
+        assert vbr != null;
+        weight_1to100 = weight_1to100 > 0 ? weight_1to100 : -weight_1to100;
+        weight_1to100 = weight_1to100 % 100;
+
+
+        final int finalWeight_1to10 = weight_1to100;
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                vbr.vibrate(finalWeight_1to10);
+            }
+        }, 100-finalWeight_1to10);
     }
 
 }
