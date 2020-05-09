@@ -48,7 +48,7 @@ public class HistoryActivity extends AppCompatActivity {
         final assistant ass = new assistant((su != null), HistoryActivity.this);
 
         //判断是否需要第一次初始化
-        if(file_edit.read("first_use", true))
+        if(file_edit.read(constr_share.first_use, true))
         {
             Intent intent = new Intent("android.intent.action.INIT");
             startActivity(intent);

@@ -29,6 +29,8 @@
         android:id="@+id/init2_tips_hear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/init2_hear_en"
         android:gravity="center"
         android:textSize="30sp"
         android:textColor="#FFFFFF"
@@ -39,6 +41,8 @@
         android:id="@+id/init2_tips_speak"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/init2_speak_en"
+        android:layout_centerHorizontal="true"
         android:gravity="center"
         android:textSize="30sp"
         android:textColor="#FFFFFF"
@@ -49,6 +53,7 @@
         android:id="@+id/init2_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/init2_bt_bg"
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:textSize="35sp"
@@ -57,27 +62,29 @@
         />
 
     <Button
-        android:id="@+id/init2_hear_dis"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_hear_disable"/>
-
-    <Button
         android:id="@+id/init2_hear_en"
         android:layout_width="wrap_content"
+        android:layout_below="@id/init2_text"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/init_hear_enable" />
-
-    <Button
-        android:id="@+id/init2_speak_dis"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_speak_disable"/>
 
     <Button
         android:id="@+id/init2_speak_en"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/init2_tips_hear"
         android:background="@drawable/init_speak_enable"/>
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@id/init2_bt_bg"
+        android:background="@drawable/black_bg"
+        />
+
 
 </RelativeLayout>

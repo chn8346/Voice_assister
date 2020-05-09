@@ -43,7 +43,7 @@ public class inits extends AppCompatActivity {
         assert vbr != null;
         touch_num = 0;
 
-        speaker speech_speaker = new speaker(inits.this);
+        final speaker speech_speaker = new speaker(inits.this);
 
 
         // 修改布局
@@ -103,16 +103,23 @@ public class inits extends AppCompatActivity {
                 {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_MOVE:
+                        touch_num++;
+                        //Log.d("________TOUCH_NUM", "______ "+touch_num+" ______");
                         if(!vbr_work) {
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
                             int heavy = vibe_simple(pos_x, pos_y, vbr);
-                            touch_num++;
-                            Log.d("________TOUCH_NUM", "______ "+touch_num+" ______");
                             if(heavy < prim_vbr*0.2)
                             {
-                                Intent intent = new Intent("android.intent.action.MAIN");
+                                if(touch_num < touch_num_identify_limit)
+                                {
+                                    user_identify = "normal";
+                                }
+
+                                init_all(user_identify, gl, file_edit);
+                                Intent intent = new Intent("android.intent.action.INIT2");
                                 startActivity(intent);
+                                speech_speaker.doSpeech("");
                                 finish();
                             }
                         }
@@ -132,16 +139,23 @@ public class inits extends AppCompatActivity {
                 {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_MOVE:
+                        touch_num++;
+                        //Log.d("________TOUCH_NUM", "______ "+touch_num+" ______");
                         if(!vbr_work) {
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
                             int heavy = vibe_simple(pos_x, pos_y, vbr);
-                            touch_num++;
-                            Log.d("________TOUCH_NUM", "______ "+touch_num+" ______");
                             if(heavy < prim_vbr*0.2)
                             {
-                                Intent intent = new Intent("android.intent.action.MAIN");
+                                if(touch_num < touch_num_identify_limit)
+                                {
+                                    user_identify = "normal";
+                                }
+
+                                init_all(user_identify, gl, file_edit);
+                                Intent intent = new Intent("android.intent.action.INIT2");
                                 startActivity(intent);
+                                speech_speaker.doSpeech("");
                                 finish();
                             }
                         }
@@ -161,17 +175,23 @@ public class inits extends AppCompatActivity {
                 {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_MOVE:
+                        touch_num++;
+                        //Log.d("________TOUCH_NUM", "______ "+touch_num+" ______");
                         if(!vbr_work) {
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
                             int heavy = vibe_simple(pos_x, pos_y, vbr);
-                            touch_num++;
-                            Log.d("________TOUCH_NUM", "______ "+touch_num+" ______");
                             if(heavy < prim_vbr*0.2)
                             {
+                                if(touch_num < touch_num_identify_limit)
+                                {
+                                    user_identify = "normal";
+                                }
 
-                                Intent intent = new Intent("android.intent.action.MAIN");
+                                init_all(user_identify, gl, file_edit);
+                                Intent intent = new Intent("android.intent.action.INIT2");
                                 startActivity(intent);
+                                speech_speaker.doSpeech("");
                                 finish();
                             }
                         }
@@ -189,9 +209,14 @@ public class inits extends AppCompatActivity {
     }
 
     private int touch_num = 0;
+    private int touch_num_identify_limit = 10;
+    private String user_identify = "blind";
+
     private int prim_vbr = 300;
     private boolean vbr_work = false;
+
     private char back_twice = '0';
+
 
     // 总配置方法
     private void init_all(String user_classify, globalstate gl, file_writer file_edit)
@@ -203,7 +228,9 @@ public class inits extends AppCompatActivity {
     // 配置文件初始化
     private void init_file(file_writer file_edit)
     {
-
+        file_edit.write(constr_share.first_use, false);
+        file_edit.write(constr_share.first_use_blind, true);
+        file_edit.read(constr_share.switch_context_realize, true);
     }
 
     // 根据反馈进行欢迎
@@ -214,6 +241,7 @@ public class inits extends AppCompatActivity {
             case "normal":
                 file_edit.write(constr_share.user_mode, constr_share.k_user_mode_normal);
                 gl.user_mode = constr_share.k_user_mode_normal;
+
                 break;
 
             case "deaf":
@@ -284,13 +312,20 @@ public class inits extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
+        speaker speech_speaker = new speaker(inits.this);
+        speech_speaker.doSpeech("");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
     }
+
+    protected void onDestroy() {
+        speaker speech_speaker = new speaker(inits.this);
+        speech_speaker.doSpeech("");
+        super.onDestroy();
+    };
 
     @Override
     public void onBackPressed() {
