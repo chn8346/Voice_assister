@@ -31,9 +31,6 @@ public class init2 extends AppCompatActivity {
         final file_writer file_edit = new file_writer(this);
         speaker speech_speaker = new speaker(this);
 
-        // 防止init1的speaker继续阅读
-        speech_speaker.doSpeech("");
-
         // 布局修改
         DisplayMetrics display = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -45,8 +42,8 @@ public class init2 extends AppCompatActivity {
         final Button speak_bt = (Button) findViewById(R.id.init2_speak_en);
         final Button next_bt = (Button) findViewById(R.id.next_button);
         TextView title = (TextView) findViewById(R.id.init2_text);
-        TextView hear_tip = (TextView) findViewById(R.id.init2_tips_hear);
-        TextView speak_tip = (TextView) findViewById(R.id.init2_tips_speak);
+        final TextView hear_tip = (TextView) findViewById(R.id.init2_tips_hear);
+        final TextView speak_tip = (TextView) findViewById(R.id.init2_tips_speak);
         TextView next_tip = (TextView) findViewById(R.id.init2_next);
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) hear_bt.getLayoutParams();
@@ -99,8 +96,10 @@ public class init2 extends AppCompatActivity {
                 hear_bt_v = !hear_bt_v;
                 if(hear_bt_v) {
                     hear_bt.setBackgroundResource(R.drawable.init_hear_enable);
+                    hear_tip.setText(R.string.init2_tip_hear);
                 }else{
                     hear_bt.setBackgroundResource(R.drawable.init_hear_disable);
+                    hear_tip.setText(R.string.init2_tip_no_hear);
                 }
             }
         });
@@ -111,8 +110,10 @@ public class init2 extends AppCompatActivity {
                 speak_bt_v = !speak_bt_v;
                 if(speak_bt_v) {
                     speak_bt.setBackgroundResource(R.drawable.init_speak_enable);
+                    speak_tip.setText(R.string.init2_tip_speak);
                 }else{
                     speak_bt.setBackgroundResource(R.drawable.init_speak_disable);
+                    speak_tip.setText(R.string.init2_tip_no_speak);
                 }
             }
         });

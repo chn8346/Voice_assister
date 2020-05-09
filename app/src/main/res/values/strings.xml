@@ -5,7 +5,7 @@
     <string name="hello">Can I help you ?</string>
     <string name="abouts">关于</string>
     <string name="welcome">欢迎使用语音助手\n长按或点击白色按钮以继续</string>
-    <string name="init2_insure">请确认语音助手\n是否需要为您进行优化\n\n</string>
+    <string name="init2_insure">请确认语音助手\n是否需要为您进行优化\n点击下方按钮即可修改设置\n</string>
     <string name="init2_tip_hear">可听见助手的回应\n</string>
     <string name="init2_tip_no_hear">听不见助手的回应\n</string>
     <string name="init2_tip_speak">我可以发出声音呼唤助手\n</string>

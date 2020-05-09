@@ -45,7 +45,6 @@ public class inits extends AppCompatActivity {
 
         final speaker speech_speaker = new speaker(inits.this);
 
-
         // 修改布局
         DisplayMetrics display = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(display);
@@ -79,7 +78,6 @@ public class inits extends AppCompatActivity {
             layoutParams.topMargin = (int) (gl.heightSize*0.07);
         }
 
-        boolean init_not_finish = true;
 
         /*
         *   判断用户的方法:
@@ -115,12 +113,14 @@ public class inits extends AppCompatActivity {
                                 {
                                     user_identify = "normal";
                                 }
-
-                                init_all(user_identify, gl, file_edit);
-                                Intent intent = new Intent("android.intent.action.INIT2");
-                                startActivity(intent);
-                                speech_speaker.doSpeech("");
-                                finish();
+                                if(!into_init2) {
+                                    init_all(user_identify, gl, file_edit);
+                                    Intent intent = new Intent("android.intent.action.INIT2");
+                                    startActivity(intent);
+                                    speech_speaker.doSpeech(" ");
+                                    into_init2 = true;
+                                    finish();
+                                }
                             }
                         }
                 }
@@ -151,12 +151,14 @@ public class inits extends AppCompatActivity {
                                 {
                                     user_identify = "normal";
                                 }
-
-                                init_all(user_identify, gl, file_edit);
-                                Intent intent = new Intent("android.intent.action.INIT2");
-                                startActivity(intent);
-                                speech_speaker.doSpeech("");
-                                finish();
+                                if(!into_init2) {
+                                    init_all(user_identify, gl, file_edit);
+                                    Intent intent = new Intent("android.intent.action.INIT2");
+                                    startActivity(intent);
+                                    speech_speaker.doSpeech(" ");
+                                    into_init2 = true;
+                                    finish();
+                                }
                             }
                         }
                 }
@@ -188,11 +190,14 @@ public class inits extends AppCompatActivity {
                                     user_identify = "normal";
                                 }
 
-                                init_all(user_identify, gl, file_edit);
-                                Intent intent = new Intent("android.intent.action.INIT2");
-                                startActivity(intent);
-                                speech_speaker.doSpeech("");
-                                finish();
+                                if(!into_init2) {
+                                    init_all(user_identify, gl, file_edit);
+                                    Intent intent = new Intent("android.intent.action.INIT2");
+                                    startActivity(intent);
+                                    speech_speaker.doSpeech(" ");
+                                    into_init2 = true;
+                                    finish();
+                                }
                             }
                         }
                 }
@@ -216,6 +221,8 @@ public class inits extends AppCompatActivity {
     private boolean vbr_work = false;
 
     private char back_twice = '0';
+
+    boolean into_init2 = false;
 
 
     // 总配置方法

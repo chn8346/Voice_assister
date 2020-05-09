@@ -29,7 +29,6 @@ import com.iflytek.cloud.SpeechUtility;
 public class HistoryActivity extends AppCompatActivity {
 
     private VideoPlay vp;
-    private boolean testmode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +43,16 @@ public class HistoryActivity extends AppCompatActivity {
         // 讯飞接口初始化
         SpeechUtility.createUtility(this, "appid=5dd651ed");
         SpeechUtility su = SpeechUtility.getUtility();
-        gl.initAssistantSuccess = (su != null);
         final Toast_ toast = new Toast_();
         final assistant ass = new assistant((su != null), HistoryActivity.this);
 
+        // 测试参数设置
+        gl.testMode = true;
+
         //判断是否需要第一次初始化&测试模式加载
-        if(file_edit.read(constr_share.first_use, true) || testmode)
+        if(file_edit.read(constr_share.first_use, true) || gl.testMode)
         {
+            gl.testMode = false;
             Intent intent = new Intent("android.intent.action.INIT");
             startActivity(intent);
         }
