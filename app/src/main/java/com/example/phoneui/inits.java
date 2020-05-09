@@ -2,6 +2,7 @@ package com.example.phoneui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -23,6 +24,12 @@ public class inits extends AppCompatActivity {
         globalstate gl = (globalstate)this.getApplication();
         Toast_ toast = new Toast_();
         file_writer file_edit = new file_writer(this);
+
+        Vibrator vbr = (Vibrator) inits.this.getSystemService(VIBRATOR_SERVICE);
+        assert vbr != null;
+
+        speaker speech_speaker = new speaker(inits.this);
+
 
         // 修改布局
         DisplayMetrics display = new DisplayMetrics();
@@ -56,10 +63,27 @@ public class inits extends AppCompatActivity {
 
         boolean init_not_finish = true;
 
+        /*
+        *   判断用户的方法:
+        *
+        *   1、直接点按成功，说明是正常人
+        *   2、直接点击进入会询问是否可以听见语音提示，是否可以说话，以此判断为聋哑人群
+        *   4、如果是长按进入，说明是失明或弱视群体。防止误触，正常人第一次进入这类主界面会提示长按可退出
+        *
+        * */
+
         // 触摸引导
         bt1.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                init_file();
+                // TODO user identify
+                init_user("normal");
+
+                Intent intent = new Intent("android.intent.action.MAIN");
+                startActivity(intent);
+
+                finish();
 
                 return false;
             }
@@ -68,13 +92,29 @@ public class inits extends AppCompatActivity {
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                init_file();
+                // TODO user identify
+                init_user("normal");
 
+                Intent intent = new Intent("android.intent.action.MAIN");
+                startActivity(intent);
+
+                finish();
             }
         });
 
         bt2.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                init_file();
+                // TODO user identify
+                init_user("normal");
+
+                Intent intent = new Intent("android.intent.action.MAIN");
+                startActivity(intent);
+
+                finish();
+
                 return false;
             }
         });
@@ -82,18 +122,23 @@ public class inits extends AppCompatActivity {
         bt2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                init_file();
+                // TODO user identify
+                init_user("normal");
 
+                Intent intent = new Intent("android.intent.action.MAIN");
+                startActivity(intent);
+
+                finish();
             }
         });
 
 
         // 语音引导
-        speaker speech_speaker = new speaker(inits.this);
-        speech_speaker.doSpeech("欢迎使用语音助手,长按或点击白色按钮以继续");
+        speech_speaker.doSpeech("欢迎使用语音助手,您可以点击按钮以开始使用助手，如果无法看见屏幕，" +
+                "请按住屏幕不松，找到震动最大的区域进入使用");
 
         // 震动引导
-        Vibrator vbr = (Vibrator) inits.this.getSystemService(VIBRATOR_SERVICE);
-        assert vbr != null;
         vbr.vibrate(100);
     }
 
