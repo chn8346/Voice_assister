@@ -105,10 +105,14 @@ public class inits extends AppCompatActivity {
                         if(!vbr_work) {
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
-                            vibe_simple(pos_x, pos_y, vbr);
+                            int heavy = vibe_simple(pos_x, pos_y, vbr);
+                            if(heavy < prim_vbr*0.1)
+                            {
+                                Intent intent = new Intent("android.intent.action.MAIN");
+                                startActivity(intent);
+                                finish();
+                            }
                         }
-
-
                 }
 
                 return true;
@@ -128,7 +132,13 @@ public class inits extends AppCompatActivity {
                         if(!vbr_work) {
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
-                            vibe_simple(pos_x, pos_y, vbr);
+                            int heavy = vibe_simple(pos_x, pos_y, vbr);
+                            if(heavy < prim_vbr*0.1)
+                            {
+                                Intent intent = new Intent("android.intent.action.MAIN");
+                                startActivity(intent);
+                                finish();
+                            }
                         }
                 }
 
@@ -149,7 +159,13 @@ public class inits extends AppCompatActivity {
                         if(!vbr_work) {
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
-                            vibe_simple(pos_x, pos_y, vbr);
+                            int heavy = vibe_simple(pos_x, pos_y, vbr);
+                            if(heavy < prim_vbr*0.1)
+                            {
+                                Intent intent = new Intent("android.intent.action.MAIN");
+                                startActivity(intent);
+                                finish();
+                            }
                         }
                 }
 
@@ -209,29 +225,49 @@ public class inits extends AppCompatActivity {
     private boolean vbr_work = false;
 
     // 震动控制封装
-    private void vibe_simple(int x, int y, final Vibrator vbr)
+    private int vibe_simple(int x, int y, final Vibrator vbr)
     {
         vbr_work = true;
         globalstate gl = (globalstate) this.getApplication();
-        float xpro = (float) Math.abs((float) x/gl.widthSize - 0.5);
-        float ypro = (float) Math.abs((float) y/gl.heightSize - 0.5);
-        int heavy = (int) (prim_vbr*Math.sqrt(xpro*xpro + ypro*ypro));
-        Log.d("POS________", "x " + xpro + ",  y "+ ypro + "  heavy " + heavy);
+        final float xpro = (float) Math.abs((float) x/gl.widthSize - 0.5);
+        final float ypro = (float) Math.abs((float) y/gl.heightSize - 0.5);
+        final int heavy = (int) (prim_vbr*Math.sqrt(xpro*xpro + ypro*ypro));
+
         vibe_simple(heavy, vbr);
-    }
-
-    private void vibe_simple(int weight_1to100, final Vibrator vbr)
-    {
-
-        vbr.vibrate(prim_vbr);
 
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                vbr.cancel();
                 vbr_work = false;
+                Log.d("POS________", "x " + xpro + ",  y "+ ypro + "  heavy " + heavy);
             }
-        }, weight_1to100);
+        }, prim_vbr);
+
+        return heavy;
+    }
+
+    private void vibe_simple(int weight_1to100, final Vibrator vbr)
+    {
+        int part = 5;
+        final int part_prim = prim_vbr/part;
+        int go_prim = part_prim - weight_1to100/part;
+
+        for(int i = 0; i < part; i++) {
+
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    vbr.vibrate(part_prim);
+                }
+            }, part_prim * i);
+
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    vbr.cancel();
+                }
+            }, go_prim + part_prim * i);
+        }
     }
 
     @Override
