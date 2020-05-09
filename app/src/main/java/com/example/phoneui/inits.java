@@ -106,7 +106,7 @@ public class inits extends AppCompatActivity {
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
                             int heavy = vibe_simple(pos_x, pos_y, vbr);
-                            if(heavy < prim_vbr*0.1)
+                            if(heavy < prim_vbr*0.2)
                             {
                                 Intent intent = new Intent("android.intent.action.MAIN");
                                 startActivity(intent);
@@ -133,7 +133,7 @@ public class inits extends AppCompatActivity {
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
                             int heavy = vibe_simple(pos_x, pos_y, vbr);
-                            if(heavy < prim_vbr*0.1)
+                            if(heavy < prim_vbr*0.2)
                             {
                                 Intent intent = new Intent("android.intent.action.MAIN");
                                 startActivity(intent);
@@ -160,7 +160,7 @@ public class inits extends AppCompatActivity {
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
                             int heavy = vibe_simple(pos_x, pos_y, vbr);
-                            if(heavy < prim_vbr*0.1)
+                            if(heavy < prim_vbr*0.2)
                             {
                                 Intent intent = new Intent("android.intent.action.MAIN");
                                 startActivity(intent);
@@ -176,17 +176,18 @@ public class inits extends AppCompatActivity {
 
         // 语音引导
         speech_speaker.doSpeech("欢迎使用语音助手,您可以点击按钮以开始使用助手，如果无法看见屏幕，" +
-                "请按住屏幕不松，找到震动最大的区域进入使用");
+                "请常按屏幕，从边缘向屏幕中央滑动，手机震动越大，距离按钮越近");
     }
 
     // 总配置方法
     private void init_all(String user_classify, globalstate gl, file_writer file_edit)
     {
-
+        init_file(file_edit);
+        init_user(user_classify, gl, file_edit);
     }
 
     // 配置文件初始化
-    private void init_file()
+    private void init_file(file_writer file_edit)
     {
 
     }
@@ -194,7 +195,6 @@ public class inits extends AppCompatActivity {
     // 根据反馈进行欢迎
     private void init_user(String user_classify, globalstate gl, file_writer file_edit)
     {
-
         switch (user_classify)
         {
             case "normal":

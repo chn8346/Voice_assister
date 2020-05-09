@@ -76,8 +76,8 @@ public class speaker {
             // 部分参数的预定
             String EngineType = SpeechConstant.TYPE_CLOUD;
             String voicer = "xiaoyan";
-            String speed = "50";
-            String pitch = "50";
+            String speed = "40";
+            String pitch = "55";
             String volume = "50";
 
             //参数设置

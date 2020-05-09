@@ -43,4 +43,32 @@
         android:text="@string/welcome"
         />
 
+    <Button
+        android:id="@+id/init_hear_dis"
+        android:layout_above="@id/init_bt_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/init_hear_disable"/>
+
+    <Button
+        android:id="@+id/init_hear_en"
+        android:layout_above="@id/init_bt_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/init_hear_enable" />
+
+    <Button
+        android:id="@+id/init_speak_dis"
+        android:layout_above="@id/init_bt_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/init_speak_disable"/>
+
+    <Button
+        android:id="@+id/init_speak_en"
+        android:layout_above="@id/init_bt_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/init_speak_enable"/>
+
 </RelativeLayout>
