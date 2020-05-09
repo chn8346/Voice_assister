@@ -197,6 +197,10 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
 
+        // TODO 写出分词功能         ----  次要
+        // TODO 解决testMode不能用的问题  --- 最次
+        // TODO 编写残疾人的终端区分  ---- 最重要
+
 /*
         //TextView sets = (TextView) findViewById(R.id.setting);
         sets.setClickable(true);
