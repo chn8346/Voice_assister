@@ -29,6 +29,7 @@ import com.iflytek.cloud.SpeechUtility;
 public class HistoryActivity extends AppCompatActivity {
 
     private VideoPlay vp;
+    private boolean testmode = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +48,8 @@ public class HistoryActivity extends AppCompatActivity {
         final Toast_ toast = new Toast_();
         final assistant ass = new assistant((su != null), HistoryActivity.this);
 
-        //判断是否需要第一次初始化
-        if(file_edit.read(constr_share.first_use, true))
+        //判断是否需要第一次初始化&测试模式加载
+        if(file_edit.read(constr_share.first_use, true) || testmode)
         {
             Intent intent = new Intent("android.intent.action.INIT");
             startActivity(intent);

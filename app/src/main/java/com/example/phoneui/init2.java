@@ -20,6 +20,9 @@ public class init2 extends AppCompatActivity {
         file_writer file_edit = new file_writer(this);
         speaker speech_speaker = new speaker(this);
 
+        // 防止init1的speaker继续阅读
+        speech_speaker.doSpeech("");
+
         // 布局修改
         DisplayMetrics display = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(display);
