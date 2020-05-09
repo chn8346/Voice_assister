@@ -8,6 +8,13 @@
     tools:context=".inits">
 
     <Button
+        android:id="@+id/init_bt_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/black_bg"
+        />
+
+    <Button
         android:id="@+id/init_bt1"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
@@ -36,9 +43,4 @@
         android:text="@string/welcome"
         />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/black_bg"
-        />
 </RelativeLayout>

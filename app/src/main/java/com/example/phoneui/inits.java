@@ -2,7 +2,9 @@ package com.example.phoneui;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.math.MathUtils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -11,6 +13,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -20,13 +24,16 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+
 public class inits extends AppCompatActivity {
 
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inits);
-
 
         // 全局变量
         final globalstate gl = (globalstate)this.getApplication();
@@ -44,8 +51,10 @@ public class inits extends AppCompatActivity {
         float scaledDensity = display.scaledDensity;
         gl.widthSize = display.widthPixels;
         gl.heightSize = display.heightPixels;
+
         Button bt1 = (Button)findViewById(R.id.init_bt1);
         Button bt2 = (Button)findViewById(R.id.init_bt2);
+        Button bg_bt = (Button)findViewById(R.id.init_bt_bg);
         TextView textView = (TextView) findViewById(R.id.init_text);
 
 
@@ -66,7 +75,7 @@ public class inits extends AppCompatActivity {
         layoutParams = (RelativeLayout.LayoutParams) textView.getLayoutParams();
         if(layoutParams != null)
         {
-            layoutParams.topMargin = (int) (gl.heightSize*0.15);
+            layoutParams.topMargin = (int) (gl.heightSize*0.07);
         }
 
         boolean init_not_finish = true;
@@ -81,52 +90,70 @@ public class inits extends AppCompatActivity {
         * */
 
         // 触摸引导
-        bt1.setOnLongClickListener(new View.OnLongClickListener() {
+
+
+            // 外层圈
+        bt1.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onLongClick(View v) {
-                vibe_simple(70, vbr);
-                return true;
-            }
-        });
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
 
-        bt1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //init_file();
-                // TODO user identify
-                //init_user("normal", gl, file_edit);
+                switch (action)
+                {
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_MOVE:
+                        if(!vbr_work) {
+                            int pos_x = (int) event.getRawX();
+                            int pos_y = (int) event.getRawY();
+                            vibe_simple(pos_x, pos_y, vbr);
+                        }
 
-                vibe_simple(50, vbr);
 
-                //Intent intent = new Intent("android.intent.action.MAIN");
-                //startActivity(intent);
-
-                //finish();
-            }
-        });
-
-        bt2.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                vibe_simple(70, vbr);
+                }
 
                 return true;
             }
         });
 
-        bt2.setOnClickListener(new View.OnClickListener() {
+            // 内层圈
+        bt2.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                //init_file();
-                // TODO user identify
-                //init_user("normal", gl, file_edit);
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
 
-                //Intent intent = new Intent("android.intent.action.MAIN");
-                //startActivity(intent);
+                switch (action)
+                {
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_MOVE:
+                        if(!vbr_work) {
+                            int pos_x = (int) event.getRawX();
+                            int pos_y = (int) event.getRawY();
+                            vibe_simple(pos_x, pos_y, vbr);
+                        }
+                }
 
-                vibe_simple(70, vbr);
+                return true;
+            }
+        });
 
-                //();
+            // 背景层
+        bg_bt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+
+                switch (action)
+                {
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_MOVE:
+                        if(!vbr_work) {
+                            int pos_x = (int) event.getRawX();
+                            int pos_y = (int) event.getRawY();
+                            vibe_simple(pos_x, pos_y, vbr);
+                        }
+                }
+
+                return true;
             }
         });
 
@@ -134,9 +161,6 @@ public class inits extends AppCompatActivity {
         // 语音引导
         speech_speaker.doSpeech("欢迎使用语音助手,您可以点击按钮以开始使用助手，如果无法看见屏幕，" +
                 "请按住屏幕不松，找到震动最大的区域进入使用");
-
-        // 震动引导
-
     }
 
     // 总配置方法
@@ -181,21 +205,33 @@ public class inits extends AppCompatActivity {
         }
     }
 
+    private int prim_vbr = 300;
+    private boolean vbr_work = false;
+
     // 震动控制封装
-    void vibe_simple(int weight_1to100, final Vibrator vbr)
+    private void vibe_simple(int x, int y, final Vibrator vbr)
     {
-        assert vbr != null;
-        weight_1to100 = weight_1to100 > 0 ? weight_1to100 : -weight_1to100;
-        weight_1to100 = weight_1to100 % 100;
+        vbr_work = true;
+        globalstate gl = (globalstate) this.getApplication();
+        float xpro = (float) Math.abs((float) x/gl.widthSize - 0.5);
+        float ypro = (float) Math.abs((float) y/gl.heightSize - 0.5);
+        int heavy = (int) (prim_vbr*Math.sqrt(xpro*xpro + ypro*ypro));
+        Log.d("POS________", "x " + xpro + ",  y "+ ypro + "  heavy " + heavy);
+        vibe_simple(heavy, vbr);
+    }
 
+    private void vibe_simple(int weight_1to100, final Vibrator vbr)
+    {
 
-        final int finalWeight_1to10 = weight_1to100;
+        vbr.vibrate(prim_vbr);
+
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                vbr.vibrate(finalWeight_1to10);
+                vbr.cancel();
+                vbr_work = false;
             }
-        }, 100-finalWeight_1to10);
+        }, weight_1to100);
     }
 
     @Override
