@@ -1,7 +1,11 @@
 package com.example.phoneui;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,11 +16,11 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class inits extends AppCompatActivity {
-    private Vibrator vbr = (Vibrator) inits.this.getSystemService(VIBRATOR_SERVICE);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +32,7 @@ public class inits extends AppCompatActivity {
         final globalstate gl = (globalstate)this.getApplication();
         Toast_ toast = new Toast_();
         final file_writer file_edit = new file_writer(this);
-
+        final Vibrator vbr = (Vibrator) inits.this.getSystemService(VIBRATOR_SERVICE);
         assert vbr != null;
 
         speaker speech_speaker = new speaker(inits.this);
@@ -43,6 +47,7 @@ public class inits extends AppCompatActivity {
         Button bt1 = (Button)findViewById(R.id.init_bt1);
         Button bt2 = (Button)findViewById(R.id.init_bt2);
         TextView textView = (TextView) findViewById(R.id.init_text);
+
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) bt1.getLayoutParams();
         if(layoutParams != null)
@@ -79,44 +84,49 @@ public class inits extends AppCompatActivity {
         bt1.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                return false;
+                vibe_simple(70, vbr);
+                return true;
             }
         });
 
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                init_file();
+                //init_file();
                 // TODO user identify
-                init_user("normal", gl, file_edit);
+                //init_user("normal", gl, file_edit);
 
-                Intent intent = new Intent("android.intent.action.MAIN");
-                startActivity(intent);
+                vibe_simple(50, vbr);
 
-                finish();
+                //Intent intent = new Intent("android.intent.action.MAIN");
+                //startActivity(intent);
+
+                //finish();
             }
         });
 
         bt2.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                vibe_simple(70, vbr);
 
-
-                return false;
+                return true;
             }
         });
 
         bt2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                init_file();
+                //init_file();
                 // TODO user identify
-                init_user("normal", gl, file_edit);
+                //init_user("normal", gl, file_edit);
 
-                Intent intent = new Intent("android.intent.action.MAIN");
-                startActivity(intent);
+                //Intent intent = new Intent("android.intent.action.MAIN");
+                //startActivity(intent);
 
-                finish();
+                vibe_simple(70, vbr);
+
+                //();
             }
         });
 
@@ -153,14 +163,18 @@ public class inits extends AppCompatActivity {
                 break;
 
             case "deaf":
+                file_edit.write(constr_share.user_mode, constr_share.k_user_mode_deaf);
+                gl.user_mode = constr_share.k_user_mode_deaf;
                 break;
 
             case "can_not_speak":
+                file_edit.write(constr_share.user_mode, constr_share.k_user_mode_mute);
+                gl.user_mode = constr_share.k_user_mode_mute;
                 break;
 
             case "blind":
             default:
-                // Defualt 最保险的做法，可以修改到其他场合
+                // 最保险的做法为 blind，可以修改到其他场合
                 gl.user_mode = constr_share.k_user_mode_Blind;
                 file_edit.write(constr_share.user_mode, constr_share.k_user_mode_Blind);
                 break;
@@ -168,7 +182,7 @@ public class inits extends AppCompatActivity {
     }
 
     // 震动控制封装
-    void vibe_simple(int weight_1to100)
+    void vibe_simple(int weight_1to100, final Vibrator vbr)
     {
         assert vbr != null;
         weight_1to100 = weight_1to100 > 0 ? weight_1to100 : -weight_1to100;
@@ -182,6 +196,45 @@ public class inits extends AppCompatActivity {
                 vbr.vibrate(finalWeight_1to10);
             }
         }, 100-finalWeight_1to10);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    private char back_twice = '0';
+
+    @Override
+    public void onBackPressed() {
+        if(back_twice == '0') {
+            Toast_ toast1 = new Toast_();
+            toast1.show(inits.this, "再次按返回键即可退出", 3000);
+            speaker speaker1 = new speaker(inits.this);
+            speaker1.doSpeech("再次按返回键即可退出");
+            back_twice = '1';
+        }
+        else{
+            // 1. 通过Context获取ActivityManager
+            ActivityManager activityManager = (ActivityManager) this.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+
+            // 2. 通过ActivityManager获取任务栈
+            assert activityManager != null;
+            List<ActivityManager.AppTask> appTaskList = activityManager.getAppTasks();
+
+            // 3. 逐个关闭Activity
+            for (ActivityManager.AppTask appTask : appTaskList) {
+                appTask.finishAndRemoveTask();
+            }
+            // 4. 结束进程
+            System.exit(0);
+        }
     }
 
 }

@@ -9,8 +9,8 @@
 
     <Button
         android:id="@+id/init_bt1"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/roundbutton1_tr"
@@ -32,6 +32,13 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="30sp"
+        android:textColor="#FFFFFF"
         android:text="@string/welcome"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/black_bg"
         />
 </RelativeLayout>
