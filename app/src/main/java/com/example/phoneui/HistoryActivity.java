@@ -29,7 +29,7 @@ import com.iflytek.cloud.SpeechUtility;
 public class HistoryActivity extends AppCompatActivity {
 
     private VideoPlay vp;
-    private boolean testmode = true;
+    private boolean testmode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

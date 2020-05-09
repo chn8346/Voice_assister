@@ -11,6 +11,7 @@ public class constr_share {
     public static final String k_user_mode_Blind = "BLIND";
     public static final String k_user_mode_deaf = "DEAF";
     public static final String k_user_mode_mute = "CAN_NOT_SPEAK";
+    public static final String k_user_mode_deaf_no_mute = "HALF_DEAF";
 
 
     public constr_share() {

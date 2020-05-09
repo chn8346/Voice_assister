@@ -11,4 +11,5 @@
     <string name="init2_tip_speak">我可以发出声音呼唤助手\n</string>
     <string name="init2_tip_no_speak">我不能发出声音呼唤助手\n</string>
     <string name="init2_finish">设置完毕</string>
+    <string name="todo">TODO</string>
 </resources>
