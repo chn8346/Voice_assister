@@ -1,9 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".init2">
+    android:background="#000000"
+    tools:context=".inits">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/init2_bt_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/black_bg"
+        />
+
+    <TextView
+        android:id="@+id/init2_text"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:textColor="#FFFFFF"
+        android:text="@string/init2_insure"
+        />
+
+    <TextView
+        android:id="@+id/init2_tips_hear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:textColor="#FFFFFF"
+        android:text="@string/init2_tip_hear"
+        />
+
+    <TextView
+        android:id="@+id/init2_tips_speak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:textColor="#FFFFFF"
+        android:text="@string/init2_tip_speak"
+        />
+
+    <TextView
+        android:id="@+id/init2_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textSize="35sp"
+        android:textColor="#FFFFFF"
+        android:text="@string/init2_finish"
+        />
+
+    <Button
+        android:id="@+id/init2_hear_dis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/init_hear_disable"/>
+
+    <Button
+        android:id="@+id/init2_hear_en"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/init_hear_enable" />
+
+    <Button
+        android:id="@+id/init2_speak_dis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/init_speak_disable"/>
+
+    <Button
+        android:id="@+id/init2_speak_en"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/init_speak_enable"/>
+
+</RelativeLayout>

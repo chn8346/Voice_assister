@@ -41,6 +41,7 @@ public class inits extends AppCompatActivity {
         final file_writer file_edit = new file_writer(this);
         final Vibrator vbr = (Vibrator) inits.this.getSystemService(VIBRATOR_SERVICE);
         assert vbr != null;
+        touch_num = 0;
 
         speaker speech_speaker = new speaker(inits.this);
 
@@ -106,6 +107,8 @@ public class inits extends AppCompatActivity {
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
                             int heavy = vibe_simple(pos_x, pos_y, vbr);
+                            touch_num++;
+                            Log.d("________TOUCH_NUM", "______ "+touch_num+" ______");
                             if(heavy < prim_vbr*0.2)
                             {
                                 Intent intent = new Intent("android.intent.action.MAIN");
@@ -133,6 +136,8 @@ public class inits extends AppCompatActivity {
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
                             int heavy = vibe_simple(pos_x, pos_y, vbr);
+                            touch_num++;
+                            Log.d("________TOUCH_NUM", "______ "+touch_num+" ______");
                             if(heavy < prim_vbr*0.2)
                             {
                                 Intent intent = new Intent("android.intent.action.MAIN");
@@ -160,8 +165,11 @@ public class inits extends AppCompatActivity {
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
                             int heavy = vibe_simple(pos_x, pos_y, vbr);
+                            touch_num++;
+                            Log.d("________TOUCH_NUM", "______ "+touch_num+" ______");
                             if(heavy < prim_vbr*0.2)
                             {
+
                                 Intent intent = new Intent("android.intent.action.MAIN");
                                 startActivity(intent);
                                 finish();
@@ -173,11 +181,17 @@ public class inits extends AppCompatActivity {
             }
         });
 
+        // TODO 优化BUG：2+以上手指进行干扰时只计算和观察距离近的那个
 
         // 语音引导
         speech_speaker.doSpeech("欢迎使用语音助手,您可以点击按钮以开始使用助手，如果无法看见屏幕，" +
                 "请常按屏幕，从边缘向屏幕中央滑动，手机震动越大，距离按钮越近");
     }
+
+    private int touch_num = 0;
+    private int prim_vbr = 300;
+    private boolean vbr_work = false;
+    private char back_twice = '0';
 
     // 总配置方法
     private void init_all(String user_classify, globalstate gl, file_writer file_edit)
@@ -221,9 +235,6 @@ public class inits extends AppCompatActivity {
         }
     }
 
-    private int prim_vbr = 300;
-    private boolean vbr_work = false;
-
     // 震动控制封装
     private int vibe_simple(int x, int y, final Vibrator vbr)
     {
@@ -239,7 +250,7 @@ public class inits extends AppCompatActivity {
             @Override
             public void run() {
                 vbr_work = false;
-                Log.d("POS________", "x " + xpro + ",  y "+ ypro + "  heavy " + heavy);
+                //Log.d("POS________", "x " + xpro + ",  y "+ ypro + "  heavy " + heavy);
             }
         }, prim_vbr);
 
@@ -280,8 +291,6 @@ public class inits extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
     }
-
-    private char back_twice = '0';
 
     @Override
     public void onBackPressed() {
