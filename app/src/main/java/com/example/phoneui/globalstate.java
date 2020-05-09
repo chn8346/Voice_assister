@@ -25,6 +25,7 @@ public class globalstate extends Application{
 
     // 测试使用参数
     public boolean testMode = false;
+    public int test_times = 0;
 
     // 废参数
     public boolean startAssistant = true;

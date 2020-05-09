@@ -47,10 +47,21 @@ public class HistoryActivity extends AppCompatActivity {
         final assistant ass = new assistant((su != null), HistoryActivity.this);
 
         // 测试参数设置
-        gl.testMode = true;
+        if(gl.test_times == 0) {
+            gl.testMode = false;
+            gl.test_times++;
+            Log.w("TEST____IN_____", "onCreate: times " + gl.test_times++);
+        }
 
         //判断是否需要第一次初始化&测试模式加载
-        if(file_edit.read(constr_share.first_use, true) || gl.testMode)
+        if(gl.testMode)
+        {
+            gl.testMode = false;
+            Intent intent = new Intent("android.intent.action.INIT");
+            startActivity(intent);
+        }
+
+        if(file_edit.read(constr_share.first_use, true))
         {
             gl.testMode = false;
             Intent intent = new Intent("android.intent.action.INIT");
