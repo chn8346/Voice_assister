@@ -143,6 +143,7 @@ public class assistant {
                 excute(cls_str);
 
                 speech_speaker.doSpeech(listen_.toString());
+
             }
 
             @Override

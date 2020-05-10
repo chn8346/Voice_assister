@@ -22,18 +22,30 @@ public class globalstate extends Application{
 
     // 状态参数
     public String user_mode = "normal";
+    public boolean first_blind = false;
 
     // 测试使用参数
     public boolean testMode = false;
-    public int test_times = 0;
+    //public int test_times = 0;
 
     // 废参数
     public boolean startAssistant = true;
 
+    // 启动
     @Override
     public void onCreate(){
         super.onCreate();
         Setting.setShowLog(true);
+    }
+
+    // 参数初始化
+    //private boolean global_state_init_finish = false;
+
+    public void update_global_state(file_writer file_edit)
+    {
+        //global_state_init_finish = true;
+        this.user_mode = file_edit.read(constr_share.user_mode, "null_");
+        this.first_blind = file_edit.read(constr_share.first_use_blind, true);
     }
 
 }

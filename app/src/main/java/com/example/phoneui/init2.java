@@ -73,11 +73,13 @@ public class init2 extends AppCompatActivity {
             layoutParams.topMargin = (int) (gl.heightSize*0.07);
         }
 
+        // 预放置，如果有用可以填充
         layoutParams = (RelativeLayout.LayoutParams) hear_tip.getLayoutParams();
         if(layoutParams != null)
         {
         }
 
+        // 预放置，如果有用可以填充
         layoutParams = (RelativeLayout.LayoutParams) speak_tip.getLayoutParams();
         if(layoutParams != null)
         {
@@ -89,6 +91,7 @@ public class init2 extends AppCompatActivity {
             layoutParams.bottomMargin = (int) (gl.heightSize*0.03);
         }
 
+        speech_speaker.doSpeech("已经成功进入语音助手，请选择");
 
         hear_bt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,26 +162,31 @@ public class init2 extends AppCompatActivity {
             case "normal":
                 file_edit.write(constr_share.user_mode, constr_share.k_user_mode_normal);
                 gl.user_mode = constr_share.k_user_mode_normal;
+                gl.first_blind = true;
                 break;
 
             case "deaf":
                 file_edit.write(constr_share.user_mode, constr_share.k_user_mode_deaf);
                 gl.user_mode = constr_share.k_user_mode_deaf;
+                gl.first_blind = true;
                 break;
 
             case "can_not_speak":
                 file_edit.write(constr_share.user_mode, constr_share.k_user_mode_mute);
                 gl.user_mode = constr_share.k_user_mode_mute;
+                gl.first_blind = true;
                 break;
 
             case "half_deaf":
                 file_edit.write(constr_share.user_mode, constr_share.k_user_mode_deaf_no_mute);
                 gl.user_mode = constr_share.k_user_mode_deaf_no_mute;
+                gl.first_blind = true;
                 break;
 
             case "blind":
             default:
                 // 最保险的做法为 blind，可以修改到其他场合
+                gl.first_blind = true;
                 gl.user_mode = constr_share.k_user_mode_Blind;
                 file_edit.write(constr_share.user_mode, constr_share.k_user_mode_Blind);
                 break;

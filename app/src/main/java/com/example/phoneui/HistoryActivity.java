@@ -1,5 +1,7 @@
 package com.example.phoneui;
 
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,14 +32,18 @@ public class HistoryActivity extends AppCompatActivity {
 
     private VideoPlay vp;
 
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainbackground);
 
-        // global state
+        // 全局变量初始化
         final globalstate gl = (globalstate)this.getApplication();
-        file_writer file_edit = new file_writer(this);
+        final file_writer file_edit = new file_writer(this);
+
+        // global state 初始化数据
+        gl.update_global_state(file_edit);
 
         // MSC init
         // 讯飞接口初始化
@@ -46,30 +52,39 @@ public class HistoryActivity extends AppCompatActivity {
         final Toast_ toast = new Toast_();
         final assistant ass = new assistant((su != null), HistoryActivity.this);
 
-        // 测试参数设置
-        if(gl.test_times == 0) {
-            gl.testMode = false;
-            gl.test_times++;
-            Log.w("TEST____IN_____", "onCreate: times " + gl.test_times++);
-        }
 
-        //判断是否需要第一次初始化&测试模式加载
+        //测试模式加载
         if(gl.testMode)
         {
             gl.testMode = false;
             Intent intent = new Intent("android.intent.action.INIT");
             startActivity(intent);
         }
+        // 测试参数设置,如果进行过testMode则不允许二次进入
+        if(gl.testMode) {
+            gl.testMode = false;
+        }
 
+        //判断是否需要第一次初始化
         if(file_edit.read(constr_share.first_use, true))
         {
-            gl.testMode = false;
+            toast.show(this, "初次使用初始化", 2000);
             Intent intent = new Intent("android.intent.action.INIT");
             startActivity(intent);
         }
 
-        // 动态背景
-        initView();
+        // 动态背景只在非盲人模式开启
+        if(file_edit.read(constr_share.user_mode, "null_").equals(constr_share.k_user_mode_Blind))
+        {
+            // TODO 修改背景
+            /*
+            @SuppressLint("ResourceType") RelativeLayout layout = (RelativeLayout) findViewById(R.layout.mainbackground);
+            layout.setBackgroundColor(R.color.black);*/
+            initView();
+        }
+        else {
+            initView();
+        }
 
         //dynamic adjust
         //控件大小位置调整
@@ -82,8 +97,10 @@ public class HistoryActivity extends AppCompatActivity {
         TextView sets = (TextView) findViewById(R.id.setting);
         TextView help = (TextView) findViewById(R.id.help);
         TextView hello = (TextView) findViewById(R.id.Hello);
-        Button talk = (Button) findViewById(R.id.groundtalk);
+        TextView blind_mode_back_tip = (TextView) findViewById(R.id.blind_quit_tip);
+        final Button talk = (Button) findViewById(R.id.groundtalk);
         Button set = (Button) findViewById(R.id.bottom_1);
+        Button back_ground_button = (Button) findViewById(R.id.main_background);
         ImageView imag = (ImageView) findViewById(R.id.set_icon);
 
         // pos adjust
@@ -143,8 +160,42 @@ public class HistoryActivity extends AppCompatActivity {
             //layoutParams.topMargin = (int) (gl.heightSize * (0.5));
         }
 
+        //toast.show(this, gl.user_mode, 1000);
+        // 盲人模式设置
+        if(gl.user_mode.equals(constr_share.k_user_mode_Blind))
+        {
+            //toast.show(this, "blind mode", 1000);
+            help.setVisibility(View.GONE);
+            talk.setVisibility(View.GONE);
+            set.setVisibility(View.GONE);
+            hello.setText("盲人模式");
+            imag.setVisibility(View.GONE);
+            back_ground_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    talk.callOnClick();
+                }
+            });
+
+            blind_mode_back_tip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO 下一版本添加 “记录上次的用户模式” 功能
+                    gl.user_mode = constr_share.k_user_mode_normal;
+                    file_edit.write(constr_share.user_mode, constr_share.k_user_mode_normal);
+                    restart();
+                }
+            });
+        }
+        else
+        {
+            blind_mode_back_tip.setVisibility(View.GONE);
+        }
+
+
 
         //控件设置
+
         set.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -201,37 +252,13 @@ public class HistoryActivity extends AppCompatActivity {
         // TODO 解决testMode不能用的问题  --- 最次
         // TODO 编写残疾人的终端区分  ---- 最重要
 
-/*
-        //TextView sets = (TextView) findViewById(R.id.setting);
-        sets.setClickable(true);
-        sets.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //finish();
-                Intent intent = new Intent("android.intent.action.ADVSETTING");
-                startActivity(intent);
-            }
-        });
-
-        //TextView help = (TextView) findViewById(R.id.help);
-        help.setClickable(true);
-        help.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //finish();
-                Intent intent = new Intent("android.intent.action.ABOUT");
-                startActivity(intent);
-            }
-        });
-*/
-
         talk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Intent intent = new Intent("android.intent.action.HISTORY");
                 //gl.startAssistant = true;
                 //startActivity(intent);
-
+                //toast.show(HistoryActivity.this, "go", 700);
                 // 震动
                 Vibrator vbr = (Vibrator) HistoryActivity.this.getSystemService(VIBRATOR_SERVICE);
                 assert vbr != null;
@@ -287,8 +314,12 @@ public class HistoryActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    private void init_paraments()
+    private void restart()
     {
-
+        Intent i = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+        assert i != null;
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
     }
 }

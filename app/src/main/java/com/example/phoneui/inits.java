@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -192,8 +193,15 @@ public class inits extends AppCompatActivity {
 
                                 if(!into_init2) {
                                     init_all(user_identify, gl, file_edit);
-                                    Intent intent = new Intent("android.intent.action.INIT2");
-                                    startActivity(intent);
+                                    if(user_identify.equals("normal")) {
+                                        Intent intent = new Intent("android.intent.action.INIT2");
+                                        startActivity(intent);
+                                    }
+                                    // 如果是盲人直接进入主界面
+                                    else
+                                    {
+                                        finish();
+                                    }
                                     speech_speaker.doSpeech(" ");
                                     into_init2 = true;
                                     finish();
@@ -206,7 +214,7 @@ public class inits extends AppCompatActivity {
             }
         });
 
-        // TODO 优化BUG：2+以上手指进行干扰时只计算和观察距离近的那个
+        // TODO BUG：2+以上手指进行干扰时只计算和观察距离近的那个
 
         // 语音引导
         speech_speaker.doSpeech("欢迎使用语音助手,您可以点击按钮以开始使用助手，如果无法看见屏幕，" +
@@ -237,7 +245,7 @@ public class inits extends AppCompatActivity {
     {
         file_edit.write(constr_share.first_use, false);
         file_edit.write(constr_share.first_use_blind, true);
-        file_edit.read(constr_share.switch_context_realize, true);
+        file_edit.write(constr_share.switch_context_realize, true);
     }
 
     // 根据反馈进行欢迎
@@ -246,17 +254,20 @@ public class inits extends AppCompatActivity {
         switch (user_classify)
         {
             case "normal":
+                gl.first_blind = true;
                 file_edit.write(constr_share.user_mode, constr_share.k_user_mode_normal);
                 gl.user_mode = constr_share.k_user_mode_normal;
 
                 break;
 
             case "deaf":
+                gl.first_blind = true;
                 file_edit.write(constr_share.user_mode, constr_share.k_user_mode_deaf);
                 gl.user_mode = constr_share.k_user_mode_deaf;
                 break;
 
             case "can_not_speak":
+                gl.first_blind = true;
                 file_edit.write(constr_share.user_mode, constr_share.k_user_mode_mute);
                 gl.user_mode = constr_share.k_user_mode_mute;
                 break;
@@ -264,6 +275,7 @@ public class inits extends AppCompatActivity {
             case "blind":
             default:
                 // 最保险的做法为 blind，可以修改到其他场合
+                gl.first_blind = true;
                 gl.user_mode = constr_share.k_user_mode_Blind;
                 file_edit.write(constr_share.user_mode, constr_share.k_user_mode_Blind);
                 break;

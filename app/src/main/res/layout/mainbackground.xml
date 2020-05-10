@@ -4,6 +4,13 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main_background"
+        android:background="@drawable/black_bg"
+        />
+
     <com.example.phoneui.VideoPlay
         android:id="@+id/VideoPlayer"
         android:layout_width="match_parent"
@@ -30,15 +37,6 @@
         android:textSize="30dp" />
 
     <Button
-        android:id="@+id/groundtalk"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginLeft="83dp"
-        android:layout_marginTop="485dp"
-        android:background="@drawable/roundbutton1_white" />
-
-    <Button
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_marginTop="500dp"
@@ -58,5 +56,23 @@
         android:text="@string/hello"
         android:layout_centerHorizontal="true"
         android:textSize="40sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/blind_quit_tip"
+        android:layout_marginTop="5dp"
+        android:text="@string/blind_mode_quit"
+        android:layout_centerHorizontal="true"
+        android:textSize="30sp"/>
+
+    <Button
+        android:id="@+id/groundtalk"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="83dp"
+        android:layout_marginTop="485dp"
+        android:background="@drawable/roundbutton1_white" />
+
 
 </RelativeLayout>

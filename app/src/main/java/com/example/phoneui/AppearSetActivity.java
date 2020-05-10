@@ -18,9 +18,11 @@ public class AppearSetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_3);
 
+        final file_writer file_edit = new file_writer(AppearSetActivity.this);
+
         final Toast_ toast = new Toast_();
 
-        globalstate gl = (globalstate) this.getApplication();
+        final globalstate gl = (globalstate) this.getApplication();
         gl.SetPos = 2;
 
         Button button1 = (Button) findViewById(R.id.settingbtn_1);
@@ -71,6 +73,9 @@ public class AppearSetActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 toast.show(AppearSetActivity.this,"主题", toast.short_time_len);
+                gl.user_mode = constr_share.k_user_mode_Blind;
+                file_edit.write(constr_share.user_mode, constr_share.k_user_mode_Blind);
+                restart();
                 //toast.show(AppearSetActivity.this, "主题", toast.short_time_len);
                 // -------
             }
@@ -192,5 +197,14 @@ public class AppearSetActivity extends AppCompatActivity {
             layoutParams.topMargin = (int) (gl.heightSize * size_x * 0.35);
             layoutParams.leftMargin = (int) (gl.heightSize * size_x * 0.25);
         }
+    }
+
+    private void restart()
+    {
+        Intent i = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+        assert i != null;
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
     }
 }
