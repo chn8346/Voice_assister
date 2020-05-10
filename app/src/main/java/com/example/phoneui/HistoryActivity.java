@@ -76,14 +76,10 @@ public class HistoryActivity extends AppCompatActivity {
         // 动态背景只在非盲人模式开启
         if(file_edit.read(constr_share.user_mode, "null_").equals(constr_share.k_user_mode_Blind))
         {
-            // TODO 修改背景
-            /*
-            @SuppressLint("ResourceType") RelativeLayout layout = (RelativeLayout) findViewById(R.layout.mainbackground);
-            layout.setBackgroundColor(R.color.black);*/
-            initView();
+            initView(gl.user_mode);
         }
         else {
-            initView();
+            initView(gl.user_mode);
         }
 
         //dynamic adjust
@@ -94,10 +90,8 @@ public class HistoryActivity extends AppCompatActivity {
         gl.widthSize = display.widthPixels;
         gl.heightSize = display.heightPixels;
 
-        TextView sets = (TextView) findViewById(R.id.setting);
-        TextView help = (TextView) findViewById(R.id.help);
         TextView hello = (TextView) findViewById(R.id.Hello);
-        TextView blind_mode_back_tip = (TextView) findViewById(R.id.blind_quit_tip);
+        Button blind_mode_back_tip = (Button) findViewById(R.id.blind_quit);
         final Button talk = (Button) findViewById(R.id.groundtalk);
         Button set = (Button) findViewById(R.id.bottom_1);
         Button back_ground_button = (Button) findViewById(R.id.main_background);
@@ -165,9 +159,8 @@ public class HistoryActivity extends AppCompatActivity {
         if(gl.user_mode.equals(constr_share.k_user_mode_Blind))
         {
             //toast.show(this, "blind mode", 1000);
-            help.setVisibility(View.GONE);
-            talk.setVisibility(View.GONE);
             set.setVisibility(View.GONE);
+            talk.setVisibility(View.GONE);
             hello.setText("盲人模式");
             imag.setVisibility(View.GONE);
             back_ground_button.setOnClickListener(new View.OnClickListener() {
@@ -177,6 +170,7 @@ public class HistoryActivity extends AppCompatActivity {
                 }
             });
 
+            // TODO 下一版本只在第一次进入可退出盲人模式，其他情况需要进入设置或者语音修改
             blind_mode_back_tip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -284,11 +278,18 @@ public class HistoryActivity extends AppCompatActivity {
         });
     }
 
-    private void initView() {
+
+    private void initView(String user_mode) {
         //加载视频资源控件
         vp = (VideoPlay) findViewById(R.id.VideoPlayer);
         //设置播放加载路径
-        vp.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.v2));
+        if(user_mode.equals(constr_share.k_user_mode_Blind))
+        {
+            vp.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.v2_dark));
+        }
+        else {
+            vp.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.v2));
+        }
         //播放
         vp.start();
         //循环播放
@@ -302,7 +303,8 @@ public class HistoryActivity extends AppCompatActivity {
     //返回重启加载
     @Override
     protected void onRestart() {
-        initView();
+        globalstate gl = (globalstate) HistoryActivity.this.getApplication();
+        initView(gl.user_mode);
         super.onRestart();
     }
 

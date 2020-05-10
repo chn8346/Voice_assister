@@ -73,8 +73,16 @@ public class AppearSetActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 toast.show(AppearSetActivity.this,"主题", toast.short_time_len);
-                gl.user_mode = constr_share.k_user_mode_Blind;
-                file_edit.write(constr_share.user_mode, constr_share.k_user_mode_Blind);
+                if(gl.user_mode.equals(constr_share.first_use_blind))
+                {
+                    // todo 加载上一次的模式，需要在global和文件里面修改
+                    gl.user_mode = constr_share.k_user_mode_normal;
+                    file_edit.write(constr_share.user_mode, constr_share.k_user_mode_normal);
+                }
+                else {
+                    gl.user_mode = constr_share.k_user_mode_Blind;
+                    file_edit.write(constr_share.user_mode, constr_share.k_user_mode_Blind);
+                }
                 restart();
                 //toast.show(AppearSetActivity.this, "主题", toast.short_time_len);
                 // -------
