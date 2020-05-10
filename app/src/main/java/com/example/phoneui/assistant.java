@@ -19,6 +19,11 @@ import com.iflytek.cloud.util.ResourceUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.huawei.hiai.nlu.model.ResponseResult; //huawei 接口返回的结果类
+import com.huawei.hiai.nlu.sdk.NLUAPIService; //huawei 接口服务类
+import com.huawei.hiai.nlu.sdk.NLUConstants; //huawei 接口常量类
+import com.huawei.hiai.nlu.sdk.OnResultListener; //huawei 异步函数，执行成功的回调结果类
+
 
 public class assistant {
     private Context context_;
@@ -244,11 +249,6 @@ public class assistant {
 
     private String classify(String words)
     {
-        if(!testMode)
-        {
-            Log.d("a____________a", "classify: start");
-            toast.show(context_, words + "-classify", toast.short_time_len);
-        }
 
 
         return "default";
