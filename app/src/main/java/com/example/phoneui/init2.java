@@ -148,7 +148,7 @@ public class init2 extends AppCompatActivity {
         });
 
 
-
+        speech_speaker.doSpeech("已进入助手" + R.string.init2_insure);
 
 
     }
