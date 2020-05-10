@@ -73,6 +73,8 @@ public class SyncSetActivity extends AppCompatActivity {
                 toast.show(SyncSetActivity.this,"开始同步", toast.short_time_len);
                 //Toast.makeText(SyncSetActivity.this, "开始同步", Toast.LENGTH_SHORT).show();
                 // -------
+                Intent intent = new Intent("android.intent.action.IDENTIFY");
+                startActivity(intent);
 
             }
         });

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -25,12 +26,23 @@ import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerListener;
 import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechRecognizer;
 import com.iflytek.cloud.SpeechUtility;
+import com.iflytek.cloud.VoiceWakeuper;
+import com.iflytek.cloud.WakeuperListener;
+import com.iflytek.cloud.WakeuperResult;
+import com.iflytek.cloud.util.ResourceUtil;
+import com.iflytek.cloud.util.ResourceUtil.RESOURCE_TYPE;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class HistoryActivity extends AppCompatActivity {
 
     private VideoPlay vp;
+    private VoiceWakeuper mIvw;
+
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -41,17 +53,52 @@ public class HistoryActivity extends AppCompatActivity {
         // 全局变量初始化
         final globalstate gl = (globalstate)this.getApplication();
         final file_writer file_edit = new file_writer(this);
-
-        // global state 初始化数据
-        gl.update_global_state(file_edit);
-
-        // MSC init
-        // 讯飞接口初始化
-        SpeechUtility.createUtility(this, "appid=5dd651ed");
         SpeechUtility su = SpeechUtility.getUtility();
+        mIvw = VoiceWakeuper.createWakeuper(this, null);
         final Toast_ toast = new Toast_();
         final assistant ass = new assistant((su != null), HistoryActivity.this);
 
+        // 唤醒词启动
+        mIvw = VoiceWakeuper.getWakeuper();
+        if(mIvw != null) {
+
+            int MAX = 3000;
+            int MIN = 0;
+            int curThresh = 1450; // 门限值
+            String keep_alive = "1";
+            String ivwNetMode = "0";
+
+            // 清空参数
+            mIvw.setParameter(SpeechConstant.PARAMS, null);
+            // 唤醒门限值，根据资源携带的唤醒词个数按照“id:门限;id:门限”的格式传入
+            mIvw.setParameter(SpeechConstant.IVW_THRESHOLD, "0:"+ curThresh);
+            // 设置唤醒模式
+            mIvw.setParameter(SpeechConstant.IVW_SST, "wakeup");
+            // 设置持续进行唤醒
+            mIvw.setParameter(SpeechConstant.KEEP_ALIVE, keep_alive);
+            // 设置闭环优化网络模式
+            mIvw.setParameter(SpeechConstant.IVW_NET_MODE, ivwNetMode);
+            // 设置唤醒资源路径
+            mIvw.setParameter(SpeechConstant.IVW_RES_PATH, getResource());
+            // 设置唤醒录音保存路径，保存最近一分钟的音频
+            mIvw.setParameter( SpeechConstant.IVW_AUDIO_PATH, Environment.getExternalStorageDirectory().getPath()+"/msc/ivw.wav" );
+            mIvw.setParameter( SpeechConstant.AUDIO_FORMAT, "wav" );
+            // 如有需要，设置 NOTIFY_RECORD_DATA 以实时通过 onEvent 返回录音音频流字节
+            //mIvw.setParameter( SpeechConstant.NOTIFY_RECORD_DATA, "1" );
+            // 启动唤醒
+            /*	mIvw.setParameter(SpeechConstant.AUDIO_SOURCE, "-1");*/
+
+            mIvw.startListening(mWakeuperListener);
+				/*File file = new File(Environment.getExternalStorageDirectory().getPath() + "/msc/ivw1.wav");
+				byte[] byetsFromFile = getByetsFromFile(file);
+				mIvw.writeAudio(byetsFromFile,0,byetsFromFile.length);*/
+            //	mIvw.stopListening();
+        } else {
+            toast.show(this,"唤醒未初始化", toast.short_time_len);
+        }
+
+        // global state 初始化数据
+        gl.update_global_state(file_edit);
 
         //测试模式加载
         if(gl.testMode)
@@ -324,4 +371,71 @@ public class HistoryActivity extends AppCompatActivity {
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
     }
+
+    // 唤醒词使用的路径寻求函数
+    private String getResource() {
+        final String resPath = ResourceUtil.generateResourcePath(HistoryActivity.this, RESOURCE_TYPE.assets, "ivw/"+getString(R.string.app_id)+".jet");
+        Log.d( "TAG", "resPath: "+resPath );
+        return resPath;
+    }
+
+    // 唤醒监听器的定义
+    private WakeuperListener mWakeuperListener = new WakeuperListener() {
+        @Override
+        public void onBeginOfSpeech() {
+
+        }
+
+        @Override
+        public void onResult(WakeuperResult wakeuperResult) {
+            // 唤醒成功先打报告，后面再根据置信度确定是否 CALL button 去开始录音
+            Log.d("TAG", "onResult");
+            String resultString;
+            try {
+                String text = wakeuperResult.getResultString();
+                JSONObject object;
+                object = new JSONObject(text);
+                StringBuffer buffer = new StringBuffer();
+                buffer.append("【RAW】 "+text);
+                buffer.append("\n");
+                buffer.append("【操作类型】"+ object.optString("sst"));
+                buffer.append("\n");
+                buffer.append("【唤醒词id】"+ object.optString("id"));
+                buffer.append("\n");
+                buffer.append("【得分】" + object.optString("score"));
+                buffer.append("\n");
+                buffer.append("【前端点】" + object.optString("bos"));
+                buffer.append("\n");
+                buffer.append("【尾端点】" + object.optString("eos"));
+                resultString =buffer.toString();
+            } catch (JSONException e) {
+                resultString = "结果解析出错";
+                e.printStackTrace();
+            }
+
+            Log.d("__WEAK__UP__RESULT ", "__WEAK__UP__RESULT \n" + resultString);
+
+            // 先立一个条件，未来需要再改
+            if(true)
+            {
+
+            }
+
+        }
+
+        @Override
+        public void onError(SpeechError speechError) {
+
+        }
+
+        @Override
+        public void onEvent(int i, int i1, int i2, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onVolumeChanged(int i) {
+
+        }
+    };
 }

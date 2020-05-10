@@ -55,6 +55,9 @@ public class assistant {
         listen_result();
     }
 
+    // 唤醒初始化
+    // todo 集成语音唤醒
+
 
     // 听写初始化
     public void init_listener()

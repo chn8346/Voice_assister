@@ -13,4 +13,5 @@
     <string name="init2_finish">设置完毕</string>
     <string name="todo">TODO</string>
     <string name="blind_mode_quit">盲人模式，点击此退出</string>
+    <string name="app_id">5dd651ed</string>
 </resources>

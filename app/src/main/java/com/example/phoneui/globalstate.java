@@ -36,6 +36,9 @@ public class globalstate extends Application{
     public void onCreate(){
         super.onCreate();
         Setting.setShowLog(true);
+
+        // 讯飞接口初始化
+        SpeechUtility.createUtility(this, "appid=5dd651ed");
     }
 
     // 参数初始化

@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 如需使用人脸识别，还要添加：摄像头权限，拍照需要用到 -->
     <uses-permission android:name="android.permission.CAMERA" />
 
+
     <application
         android:name=".globalstate"
         android:allowBackup="true"
@@ -95,6 +96,15 @@
         <activity android:name=".AboutsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.ABOUT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".sound_identify"
+            android:theme="@style/Transparent">
+            <intent-filter>
+                <action android:name="android.intent.action.IDENTIFY" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
