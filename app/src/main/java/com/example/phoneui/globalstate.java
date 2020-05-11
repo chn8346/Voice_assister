@@ -27,6 +27,7 @@ public class globalstate extends Application{
     // 状态参数
     public String user_mode = "normal"; // ***FILE*** Y
     public boolean first_blind = false; // ***FILE*** Y
+    public boolean appear_talk_list = false;
 
     // 这个int变量不是使用次数，是初始化模型的次数
     public int HW_nlu_use_time = 0;  // ***FILE*** Y

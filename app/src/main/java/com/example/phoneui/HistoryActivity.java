@@ -25,9 +25,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.huawei.hiai.nlu.sdk.NLUAPILocalService;
-import com.huawei.hiai.nlu.sdk.NLUAPIService;
-import com.huawei.hiai.nlu.sdk.OnResultListener;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerListener;
@@ -44,10 +41,19 @@ import com.iflytek.cloud.util.ResourceUtil.RESOURCE_TYPE;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import com.huawei.hiai.nlu.sdk.NLUAPILocalService;
+import com.huawei.hiai.nlu.sdk.NLUAPIService;
+import com.huawei.hiai.nlu.model.ResponseResult; //huawei 接口返回的结果类
+import com.huawei.hiai.nlu.sdk.NLUConstants; //huawei 接口常量类
+import com.huawei.hiai.nlu.sdk.OnResultListener; //huawei 异步函数，执行成功的回调结果类
+
+
 public class HistoryActivity extends AppCompatActivity {
 
     private VideoPlay vp;
-
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -63,10 +69,9 @@ public class HistoryActivity extends AppCompatActivity {
         *   3. 控件点按设置
         *   4. 特殊情况的处理，重启
         *
-        *
         * */
 
-        //-------------------------------------------------------------------------
+        //------------------------------------------------
 
         /*
         *
@@ -77,15 +82,14 @@ public class HistoryActivity extends AppCompatActivity {
         // 全局变量初始化
         final globalstate gl = (globalstate)this.getApplication();
         final file_writer file_edit = new file_writer(this);
+        speaker speech_speaker = new speaker(this);
         SpeechUtility su = SpeechUtility.getUtility();
         final Toast_ toast = new Toast_();
-        final assistant ass = new assistant((su != null), HistoryActivity.this);
 
         // global state 初始化数据
         gl.update_global_state(file_edit);
 
         // 华为NLU服务启动
-        /*
         boolean first_use_huawei_nlu_model = true;
         if(gl.HW_nlu_use_time < 1)
         {
@@ -99,7 +103,12 @@ public class HistoryActivity extends AppCompatActivity {
                 // 初始化成功回调，在服务初始化成功调用该函数
                 gl.Hw_nlu_start = true;
             }
-        }, first_use_huawei_nlu_model);*/
+        }, first_use_huawei_nlu_model);
+
+        // 由于打招呼的文本框还要作为对话框，这里提前声明，写入语音助手类
+        TextView hello = (TextView) findViewById(R.id.Hello);
+        // 语音助手类初始化，导入上一行的文本框
+        final assistant ass = new assistant((su != null), HistoryActivity.this, hello);
 
         //测试模式加载
         if(gl.testMode)
@@ -149,12 +158,12 @@ public class HistoryActivity extends AppCompatActivity {
         gl.widthSize = display.widthPixels;
         gl.heightSize = display.heightPixels;
 
-        TextView hello = (TextView) findViewById(R.id.Hello);
         Button blind_mode_back_tip = (Button) findViewById(R.id.blind_quit);
         final Button talk = (Button) findViewById(R.id.groundtalk);
         Button set = (Button) findViewById(R.id.bottom_1);
         Button back_ground_button = (Button) findViewById(R.id.main_background);
         ImageView imag = (ImageView) findViewById(R.id.set_icon);
+
 
         // pos adjust
 
@@ -250,9 +259,19 @@ public class HistoryActivity extends AppCompatActivity {
 
         /*
          *
-         *       特殊情况的处理
+         *       控件点按设置
          *
          * */
+
+        // 后台未完成，目前的提示语
+        ass.wake_pause();
+        speech_speaker.doSpeech("后台未完成，我暂时是一台复读机，可叫我语音助手把我唤醒");
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                ass.wake_go_on();
+            }
+        }, 7000);
 
         //控件点按设置
 
@@ -331,6 +350,8 @@ public class HistoryActivity extends AppCompatActivity {
 
                 // 执行接口
                 ass.listen_result();
+
+                //toast.show(HistoryActivity.this, band.download_result(), 1000);
             }
         });
 
@@ -346,7 +367,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     /*
      *
-     *       控件点按设置
+     *       特殊情况处理
      *
      * */
 

@@ -5,6 +5,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
 
@@ -21,10 +23,11 @@ import com.iflytek.cloud.util.ResourceUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
-//import com.huawei.hiai.nlu.model.ResponseResult; //huawei 接口返回的结果类
-//import com.huawei.hiai.nlu.sdk.NLUAPIService; //huawei 接口服务类
-//import com.huawei.hiai.nlu.sdk.NLUConstants; //huawei 接口常量类
+import com.huawei.hiai.nlu.model.ResponseResult; //huawei 接口返回的结果类
+import com.huawei.hiai.nlu.sdk.NLUAPIService; //huawei 接口服务类
+import com.huawei.hiai.nlu.sdk.NLUConstants; //huawei 接口常量类
 import com.huawei.hiai.nlu.sdk.OnResultListener; //huawei 异步函数，执行成功的回调结果类
 
 import java.util.HashMap;
@@ -36,17 +39,20 @@ public class assistant {
     private Toast_ toast = new Toast_();
     private SpeechRecognizer mIat;
     private int state = 0;
-    private boolean testMode = true;
+    private boolean testMode = false;
     private StringBuffer listen_ = new StringBuffer();
     private String cls_str = "";
     private speaker speech_speaker;
     private VoiceWakeuper mIvw = null;
+    private StringBuffer talkList = new StringBuffer();
+    private TextView view_;
 
     // 构造函数
-    public assistant(boolean is_init_utility, Context context)
+    public assistant(boolean is_init_utility, Context context, TextView view_)
     {
         context_ = context;
-
+        talkList.setLength(0);
+        this.view_ = view_;
         // 状态判断的变量，如果state后续中小于某个值就会无法执行
         state = 0;
 
@@ -70,6 +76,29 @@ public class assistant {
         {
             toast.show(context, "init utility fail", 1000 );
         }
+    }
+
+    //改变语音栏位的文字
+    public void load_talk(String talks, TextView view)
+    {
+        talkList.append("\n").append(talks);
+
+        globalstate gl = (globalstate) context_.getApplicationContext();
+
+        // 盲人界面不需要改栏位
+        if(gl.user_mode.equals(constr_share.k_user_mode_Blind))
+        {
+            return;
+        }
+
+        if(!gl.appear_talk_list)
+        {
+            gl.appear_talk_list = true;
+            // 改布局
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+            layoutParams.topMargin = (int) (gl.heightSize * 0.05);
+        }
+        view.setText(talkList.toString());
     }
 
 
@@ -127,25 +156,36 @@ public class assistant {
         } else {
             toast.show(context_,"唤醒未初始化", toast.short_time_len);
         }
-
-        mIvw.startListening(mWakeuperListener);
-        toast.show(context_,"唤醒中", toast.short_time_len);
     }
 
+    // 唤醒暂停
+    public void wake_pause()
+    {
+        if(mIvw != null){
+            mIvw.stopListening();
+        }
+    }
+
+    // 唤醒保持继续
+    public void wake_go_on()
+    {
+        if(mIvw != null) {
+            mIvw.startListening(mWakeuperListener);
+        }
+    }
 
     // 统一构造封装的听写方法
     public void assistant_listen()
     {
         init_listener();
-
         listen_result();
     }
-
 
     // 听写初始化
     public void init_listener()
     {
-        // TODO 使得ivw直接中断
+        //使得ivw直接中断
+        mIvw.stopListening();
 
         if(state < 1) {
             toast.show(context_, "初始化错误", toast.short_time_len);
@@ -191,7 +231,7 @@ public class assistant {
         }
     }
 
-    // 获取听写的音频和文字、分类
+    // 开始听写，获取音频和文字、分类
     public void listen_result()
     {
 
@@ -225,13 +265,21 @@ public class assistant {
                     toast.show(context_, "录音结束", 300);
                 }
 
-                //mIat.stopListening();
 
+                // 对命令进行分类
                 cls_str = classify(listen_.toString());
 
+                // 执行命令
                 excute(cls_str);
 
+                // 读出回应（测试模式下为读出使用者的命令）
                 speech_speaker.doSpeech(listen_.toString());
+
+                //使得ivw（语音唤醒）恢复
+                mIvw.startListening(mWakeuperListener);
+
+                // 修改主界面的文字，将TextView变成对话框
+                load_talk(listen_.toString(), view_);
 
             }
 
@@ -269,6 +317,7 @@ public class assistant {
         mIat.startListening(mRecogListener);
     }
 
+    // 对命令进行分类
     private String classify(String words)
     {
         /*
@@ -278,6 +327,7 @@ public class assistant {
         return "default";
     }
 
+    // 执行命令
     public void excute(String classify)
     {
         switch (classify){
@@ -290,11 +340,9 @@ public class assistant {
     // 唤醒词使用的路径寻求函数
     private String getResource() {
         //return "ivw/"+ context_.getString(R.string.app_id) +".jet";
-
-        final String resPath = ResourceUtil.generateResourcePath(context_, ResourceUtil.RESOURCE_TYPE.res, String.valueOf(R.raw.);
+        final String resPath = ResourceUtil.generateResourcePath(context_, ResourceUtil.RESOURCE_TYPE.assets,"5eb4d530.jet");
         return resPath;
     }
-
 
     // 唤醒监听器的定义
     private WakeuperListener mWakeuperListener = new WakeuperListener() {
