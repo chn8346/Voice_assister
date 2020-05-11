@@ -324,7 +324,9 @@ public class assistant {
     {
         Log.d("______CLASSIFY_________", "___WORD___: " + words);
 
-        // 集成的华为命令类指令
+        // TODO 两种命令识别方式分着用
+
+        // 集成的华为命令类指令   --- >
         String texts = "{text:'" + words + "'";
         String category = ",category:'systemSetting,trip,contact'";
         String module = "}";
@@ -337,11 +339,20 @@ public class assistant {
         Log.d("______CLASSIFY_________", "___MSG___: " + respResult.getMessage());
 
 
-        // 自加工的分词和启发式指令
+        // NLP 分词 --> 好像用不到
+        /*
         Json = "{text:'"+words+"',type:1}";
         respResult = NLUAPIService.getInstance().getWordSegment(Json, NLUConstants.REQUEST_TYPE_LOCAL);
 
         Log.d("______CLASSIFY_________", "___SEG___: " + respResult.getJsonRes());
+        */
+
+
+        // 词性分析
+        Json = "{text:'"+words+"',type:1}"; // TODO 调节细粒度  9223372036854775807
+        respResult = NLUAPIService.getInstance().getWordPos(Json, NLUConstants.REQUEST_TYPE_LOCAL);
+
+        Log.d("______CLASSIFY_________", "___WORD___: " + respResult.getJsonRes());
 
 
         return "default";
