@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
 
+import com.google.gson.JsonObject;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerListener;
 import com.iflytek.cloud.RecognizerResult;
@@ -21,6 +22,7 @@ import com.iflytek.cloud.WakeuperListener;
 import com.iflytek.cloud.WakeuperResult;
 import com.iflytek.cloud.util.ResourceUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
@@ -275,7 +277,7 @@ public class assistant {
                 // 读出回应（测试模式下为读出使用者的命令）
                 speech_speaker.doSpeech(listen_.toString());
 
-                //使得ivw（语音唤醒）恢复
+                // 使得ivw（语音唤醒）恢复
                 mIvw.startListening(mWakeuperListener);
 
                 // 修改主界面的文字，将TextView变成对话框
@@ -320,10 +322,28 @@ public class assistant {
     // 对命令进行分类
     private String classify(String words)
     {
-        /*
-        String Json = "{text:'"+ words +"',type:1}";
+        Log.d("______CLASSIFY_________", "___WORD___: " + words);
+
+        // 集成的华为命令类指令
+        String texts = "{text:'" + words + "'";
+        String category = ",category:'systemSetting,trip,contact'";
+        String module = "}";
+        String Json = texts + category + module;
+
         ResponseResult respResult = NLUAPIService.getInstance().getAssistantIntention(Json, NLUConstants.REQUEST_TYPE_LOCAL);
-        Log.d("______CLASSIFY_________", "___JSON___: " + respResult);*/
+
+        Log.d("______CLASSIFY_________", "___JSON___: " + respResult.getJsonRes());
+        Log.d("______CLASSIFY_________", "___CODE___: " + respResult.getCode());
+        Log.d("______CLASSIFY_________", "___MSG___: " + respResult.getMessage());
+
+
+        // 自加工的分词和启发式指令
+        Json = "{text:'"+words+"',type:1}";
+        respResult = NLUAPIService.getInstance().getWordSegment(Json, NLUConstants.REQUEST_TYPE_LOCAL);
+
+        Log.d("______CLASSIFY_________", "___SEG___: " + respResult.getJsonRes());
+
+
         return "default";
     }
 
