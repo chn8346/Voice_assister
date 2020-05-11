@@ -1,9 +1,12 @@
 package com.example.phoneui;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerListener;
@@ -90,19 +93,27 @@ public class assistant {
 
             // 清空参数
             mIvw.setParameter(SpeechConstant.PARAMS, null);
+            Log.d("________TEST_______", "PARAMS");
             // 唤醒门限值，根据资源携带的唤醒词个数按照“id:门限;id:门限”的格式传入
             mIvw.setParameter(SpeechConstant.IVW_THRESHOLD, "0:"+ curThresh);
+            Log.d("________TEST_______", "IVW_THRESHOLD");
             // 设置唤醒模式
             mIvw.setParameter(SpeechConstant.IVW_SST, "wakeup");
+            Log.d("________TEST_______", "IVW_SST");
             // 设置持续进行唤醒
             mIvw.setParameter(SpeechConstant.KEEP_ALIVE, keep_alive);
+            Log.d("________TEST_______", "KEEP_ALIVE");
             // 设置闭环优化网络模式
             mIvw.setParameter(SpeechConstant.IVW_NET_MODE, ivwNetMode);
+            Log.d("________TEST_______", "IVW_NET_MODE");
             // 设置唤醒资源路径
             mIvw.setParameter(SpeechConstant.IVW_RES_PATH, getResource());
+            Log.d("________TEST_______", "IVW_RES_PATH");
             // 设置唤醒录音保存路径，保存最近一分钟的音频
             mIvw.setParameter( SpeechConstant.IVW_AUDIO_PATH, Environment.getExternalStorageDirectory().getPath()+"/msc/ivw.wav" );
+            Log.d("________TEST_______", "IVW_AUDIO_PATH");
             mIvw.setParameter( SpeechConstant.AUDIO_FORMAT, "wav" );
+            Log.d("________TEST_______", "AUDIO_FORMAT");
             // 如有需要，设置 NOTIFY_RECORD_DATA 以实时通过 onEvent 返回录音音频流字节
             //mIvw.setParameter( SpeechConstant.NOTIFY_RECORD_DATA, "1" );
             // 启动唤醒
@@ -134,6 +145,8 @@ public class assistant {
     // 听写初始化
     public void init_listener()
     {
+        // TODO 使得ivw直接中断
+
         if(state < 1) {
             toast.show(context_, "初始化错误", toast.short_time_len);
             return;
@@ -276,8 +289,9 @@ public class assistant {
 
     // 唤醒词使用的路径寻求函数
     private String getResource() {
-        final String resPath = ResourceUtil.generateResourcePath(context_, ResourceUtil.RESOURCE_TYPE.assets, "ivw/"+context_.getString(R.string.app_id)+".jet");
-        Log.d( "TAG", "resPath: "+resPath );
+        //return "ivw/"+ context_.getString(R.string.app_id) +".jet";
+
+        final String resPath = ResourceUtil.generateResourcePath(context_, ResourceUtil.RESOURCE_TYPE.res, String.valueOf(R.raw.);
         return resPath;
     }
 
