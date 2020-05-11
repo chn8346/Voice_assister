@@ -22,6 +22,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.huawei.hiai.nlu.sdk.NLUAPILocalService;
+import com.huawei.hiai.nlu.sdk.NLUAPIService;
+import com.huawei.hiai.nlu.sdk.OnResultListener;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerListener;
@@ -75,9 +78,24 @@ public class HistoryActivity extends AppCompatActivity {
         final Toast_ toast = new Toast_();
         final assistant ass = new assistant((su != null), HistoryActivity.this);
 
-
         // global state 初始化数据
         gl.update_global_state(file_edit);
+
+        // 华为NLU服务启动
+        boolean first_use_huawei_nlu_model = true;
+        if(gl.HW_nlu_use_time < 1)
+        {
+            first_use_huawei_nlu_model = false;
+            gl.HW_nlu_use_time = gl.HW_nlu_use_time + 1;
+            gl.re_write_global_state_file(file_edit);// 重写文件
+        }
+        NLUAPIService.getInstance().init(HistoryActivity.this, new OnResultListener< Integer >() {
+            @Override
+            public void onResult(Integer result) {
+                // 初始化成功回调，在服务初始化成功调用该函数
+                gl.Hw_nlu_start = true;
+            }
+        }, first_use_huawei_nlu_model);
 
         //测试模式加载
         if(gl.testMode)
@@ -364,6 +382,12 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onStop() {
         vp.stopPlayback();
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NLUAPIService.getInstance().onDestroy();
     }
 
     private void restart()

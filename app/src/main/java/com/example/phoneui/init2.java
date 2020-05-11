@@ -157,6 +157,9 @@ public class init2 extends AppCompatActivity {
     // 根据反馈进行欢迎
     private void init_user(String user_classify, globalstate gl, file_writer file_edit)
     {
+        // 华为API首次使用进行记录，方便初始化
+        file_edit.write(constr_share.huawei_nlu_api_use_time, 0); // NLU API记录
+
         switch (user_classify)
         {
             case "normal":

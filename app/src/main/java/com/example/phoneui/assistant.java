@@ -24,6 +24,9 @@ import com.huawei.hiai.nlu.sdk.NLUAPIService; //huawei 接口服务类
 import com.huawei.hiai.nlu.sdk.NLUConstants; //huawei 接口常量类
 import com.huawei.hiai.nlu.sdk.OnResultListener; //huawei 异步函数，执行成功的回调结果类
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class assistant {
     private Context context_;
@@ -51,8 +54,13 @@ public class assistant {
             // 状态判断的变量，如果state后续中小于某个值就会无法执行
             state = state + 1;
 
+            // 语音输出
             speech_speaker = new speaker(context_);
+
+            // 唤醒器
             mIvw = VoiceWakeuper.createWakeuper(context_, null);
+
+            // NLU接口
 
         }
         else

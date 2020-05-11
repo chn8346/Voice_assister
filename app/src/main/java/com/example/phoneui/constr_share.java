@@ -5,6 +5,7 @@ public class constr_share {
     public static final String first_use = "FIRST_USE";
     public static final String first_use_blind = "BLIND_FIRST_USE";
     public static final String switch_context_realize = "S_CONTEXT_REA";
+    public static final String huawei_nlu_api_use_time = "HW_NLU_API_TIMES";
 
     // USER MODE KEY
     public static final String k_user_mode_normal = "NORMAL";
