@@ -25,21 +25,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.iflytek.cloud.ErrorCode;
-import com.iflytek.cloud.InitListener;
-import com.iflytek.cloud.RecognizerListener;
-import com.iflytek.cloud.SpeechConstant;
-import com.iflytek.cloud.SpeechError;
-import com.iflytek.cloud.SpeechRecognizer;
 import com.iflytek.cloud.SpeechUtility;
-import com.iflytek.cloud.VoiceWakeuper;
-import com.iflytek.cloud.WakeuperListener;
-import com.iflytek.cloud.WakeuperResult;
-import com.iflytek.cloud.util.ResourceUtil;
-import com.iflytek.cloud.util.ResourceUtil.RESOURCE_TYPE;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -102,6 +88,8 @@ public class HistoryActivity extends AppCompatActivity {
             public void onResult(Integer result) {
                 // 初始化成功回调，在服务初始化成功调用该函数
                 gl.Hw_nlu_start = true;
+                //toast.show(HistoryActivity.this, "NLU初始化成功", 1500);
+                Log.d("_____NLU_____", "_____NLU_____OK_____");
             }
         }, first_use_huawei_nlu_model);
 
@@ -253,7 +241,6 @@ public class HistoryActivity extends AppCompatActivity {
         {
             blind_mode_back_tip.setVisibility(View.GONE);
         }
-
 
 
 
@@ -422,13 +409,6 @@ public class HistoryActivity extends AppCompatActivity {
         assert i != null;
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
-    }
-
-    // 唤醒词使用的路径寻求函数
-    private String getResource() {
-        final String resPath = ResourceUtil.generateResourcePath(HistoryActivity.this, RESOURCE_TYPE.assets, "ivw/"+getString(R.string.app_id)+".jet");
-        Log.d( "TAG", "resPath: "+resPath );
-        return resPath;
     }
 
 }
