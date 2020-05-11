@@ -46,7 +46,7 @@ public class globalstate extends Application{
         Setting.setShowLog(true);
 
         // 讯飞接口初始化
-        SpeechUtility.createUtility(this, "appid=5dd651ed");
+        SpeechUtility.createUtility(this, "appid=5eb4d530");
     }
 
 

@@ -82,6 +82,7 @@ public class HistoryActivity extends AppCompatActivity {
         gl.update_global_state(file_edit);
 
         // 华为NLU服务启动
+        /*
         boolean first_use_huawei_nlu_model = true;
         if(gl.HW_nlu_use_time < 1)
         {
@@ -95,7 +96,7 @@ public class HistoryActivity extends AppCompatActivity {
                 // 初始化成功回调，在服务初始化成功调用该函数
                 gl.Hw_nlu_start = true;
             }
-        }, first_use_huawei_nlu_model);
+        }, first_use_huawei_nlu_model);*/
 
         //测试模式加载
         if(gl.testMode)

@@ -19,9 +19,9 @@ import com.iflytek.cloud.util.ResourceUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.huawei.hiai.nlu.model.ResponseResult; //huawei 接口返回的结果类
-import com.huawei.hiai.nlu.sdk.NLUAPIService; //huawei 接口服务类
-import com.huawei.hiai.nlu.sdk.NLUConstants; //huawei 接口常量类
+//import com.huawei.hiai.nlu.model.ResponseResult; //huawei 接口返回的结果类
+//import com.huawei.hiai.nlu.sdk.NLUAPIService; //huawei 接口服务类
+//import com.huawei.hiai.nlu.sdk.NLUConstants; //huawei 接口常量类
 import com.huawei.hiai.nlu.sdk.OnResultListener; //huawei 异步函数，执行成功的回调结果类
 
 import java.util.HashMap;
@@ -116,6 +116,9 @@ public class assistant {
         } else {
             toast.show(context_,"唤醒未初始化", toast.short_time_len);
         }
+
+        mIvw.startListening(mWakeuperListener);
+        toast.show(context_,"唤醒中", toast.short_time_len);
     }
 
 
@@ -126,9 +129,6 @@ public class assistant {
 
         listen_result();
     }
-
-    // 唤醒初始化
-    // todo 集成语音唤醒
 
 
     // 听写初始化
@@ -145,6 +145,7 @@ public class assistant {
                 
             }
         };
+
         mIat = SpeechRecognizer.createRecognizer(context_, mInitListener);
         if(mIat == null)
         {
@@ -257,7 +258,10 @@ public class assistant {
 
     private String classify(String words)
     {
-
+        /*
+        String Json = "{text:'"+ words +"',type:1}";
+        ResponseResult respResult = NLUAPIService.getInstance().getAssistantIntention(Json, NLUConstants.REQUEST_TYPE_LOCAL);
+        Log.d("______CLASSIFY_________", "___JSON___: " + respResult);*/
         return "default";
     }
 
@@ -317,6 +321,7 @@ public class assistant {
             // 先立一个条件，未来需要再改
             if(true)
             {
+                mIvw.stopListening();
                 assistant_listen();
             }
 
