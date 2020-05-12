@@ -358,6 +358,8 @@ public class assistant {
         return "default";
     }
 
+    // TODO 给盲人的图像识别和
+
     // 执行命令
     public void excute(String classify)
     {
