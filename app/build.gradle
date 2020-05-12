@@ -29,9 +29,10 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.google.code.gson:gson:2.8.5'
-    //implementation(name: 'huawei-hiai-nlu-10.0.4.307', ext: 'aar')
-    implementation files('libs/classes.jar')
-    implementation files('libs/hw_pdk.jar')
+    implementation(name: 'huawei-hiai-nlu-10.0.4.307', ext: 'aar')
+    implementation(name: 'huawei-hiai-vision-10.0.4.307', ext: 'aar')
+    implementation(name: 'huawei-hiai-pdk-1.0.0', ext: 'aar')
+    implementation(name: 'huawei-hiai-asr-10.0.4.307', ext: 'aar')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
@@ -39,5 +40,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation files('libs/Msc.jar')
+    implementation files('libs/fastjson-1.2.68.jar')
     implementation 'org.jetbrains:annotations-java5:15.0'
 }

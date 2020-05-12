@@ -1,16 +1,13 @@
 package com.example.phoneui;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.JsonToken;
 import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.core.app.ActivityCompat;
-
-import com.google.gson.JsonObject;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerListener;
 import com.iflytek.cloud.RecognizerResult;
@@ -22,10 +19,10 @@ import com.iflytek.cloud.WakeuperListener;
 import com.iflytek.cloud.WakeuperResult;
 import com.iflytek.cloud.util.ResourceUtil;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
+//import org.json.JSONArray;
+//import org.json.JSONException;
+//import org.json.JSONObject;
+//import org.w3c.dom.Text;
 
 import com.huawei.hiai.nlu.model.ResponseResult; //huawei 接口返回的结果类
 import com.huawei.hiai.nlu.sdk.NLUAPIService; //huawei 接口服务类
@@ -34,6 +31,8 @@ import com.huawei.hiai.nlu.sdk.OnResultListener; //huawei 异步函数，执行�
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.alibaba.fastjson.*;
 
 
 public class assistant {
@@ -48,6 +47,8 @@ public class assistant {
     private VoiceWakeuper mIvw = null;
     private StringBuffer talkList = new StringBuffer();
     private TextView view_;
+    private int confidence = -1;
+    private executeMethod executor;
 
     // 构造函数
     public assistant(boolean is_init_utility, Context context, TextView view_)
@@ -57,6 +58,8 @@ public class assistant {
         this.view_ = view_;
         // 状态判断的变量，如果state后续中小于某个值就会无法执行
         state = 0;
+
+        executor = new executeMethod();
 
         if(is_init_utility)
         {
@@ -338,36 +341,52 @@ public class assistant {
         Log.d("______CLASSIFY_________", "___CODE___: " + respResult.getCode());
         Log.d("______CLASSIFY_________", "___MSG___: " + respResult.getMessage());
 
+        String msg = respResult.getJsonRes();
 
-        // NLP 分词 --> 好像用不到
-        /*
-        Json = "{text:'"+words+"',type:1}";
-        respResult = NLUAPIService.getInstance().getWordSegment(Json, NLUConstants.REQUEST_TYPE_LOCAL);
+        JSONObject jsonObject = new JSONObject();
 
-        Log.d("______CLASSIFY_________", "___SEG___: " + respResult.getJsonRes());
-        */
+        // 如果这一步已经识别到了情景和命令，那就不用做后面的任务了，完成这一步处理就好
+        if(msg.contains("intentions"))
+        {
+            jsonObject = JSON.parseObject(msg);
+            JSONArray jsonArray = jsonObject.getJSONArray("intentions");
+            jsonObject = jsonArray.getJSONObject(0);
+            String name = jsonObject.getString("name");
+            int confidence = jsonObject.getInteger("confidence");
+            Log.d("______CLASSIFY_________", "___JSON_ANA___: " + name + "CONF" + confidence);
+            this.confidence = confidence;
+            return "intentions_" + name;
+        }
+        else {
 
 
-        // 词性分析
-        Json = "{text:'"+words+"',type:1}"; // TODO 调节细粒度  9223372036854775807
-        respResult = NLUAPIService.getInstance().getWordPos(Json, NLUConstants.REQUEST_TYPE_LOCAL);
+            // NLP 分词 --> 好像用不到
+            /*
+            Json = "{text:'"+words+"',type:1}";
+            respResult = NLUAPIService.getInstance().getWordSegment(Json, NLUConstants.REQUEST_TYPE_LOCAL);
 
-        Log.d("______CLASSIFY_________", "___WORD___: " + respResult.getJsonRes());
+            Log.d("______CLASSIFY_________", "___SEG___: " + respResult.getJsonRes());
+            */
 
+            // 词性分析
+            Json = "{text:'" + words + "',type:1}"; // TODO 调节细粒度  9223372036854775807
+            respResult = NLUAPIService.getInstance().getWordPos(Json, NLUConstants.REQUEST_TYPE_LOCAL);
 
+            Log.d("______CLASSIFY_________", "___WORD___: " + respResult.getJsonRes());
+
+            // 特定内容的截取分析
+            Json = Json = "{text:'" + words + "'}";
+            respResult = NLUAPIService.getInstance().getEntity(Json, NLUConstants.REQUEST_TYPE_LOCAL);
+
+            Log.d("______CLASSIFY_________", "___MAIN___: " + respResult.getJsonRes());
+        }
         return "default";
     }
-
-    // TODO 给盲人的图像识别和
 
     // 执行命令
     public void excute(String classify)
     {
-        switch (classify){
-            case "default":
-                break;
-        }
-        return;
+
     }
 
     // 唤醒词使用的路径寻求函数
@@ -391,21 +410,9 @@ public class assistant {
             String resultString;
             try {
                 String text = wakeuperResult.getResultString();
-                JSONObject object;
-                object = new JSONObject(text);
-                StringBuffer buffer = new StringBuffer();
-                buffer.append("【RAW】 "+text);
-                buffer.append("\n");
-                buffer.append("【操作类型】"+ object.optString("sst"));
-                buffer.append("\n");
-                buffer.append("【唤醒词id】"+ object.optString("id"));
-                buffer.append("\n");
-                buffer.append("【得分】" + object.optString("score"));
-                buffer.append("\n");
-                buffer.append("【前端点】" + object.optString("bos"));
-                buffer.append("\n");
-                buffer.append("【尾端点】" + object.optString("eos"));
-                resultString =buffer.toString();
+                Log.d("__WEAK__UP__RESULT ", "__WEAK__UP__RESULT \n" + text);
+                resultString = text;
+
             } catch (JSONException e) {
                 resultString = "结果解析出错";
                 e.printStackTrace();

@@ -251,6 +251,8 @@ public class HistoryActivity extends AppCompatActivity {
          * */
 
         // 后台未完成，目前的提示语
+
+        /*
         ass.wake_pause();
         speech_speaker.doSpeech("后台未完成，我暂时是一台复读机，可叫我语音助手把我唤醒");
         new Timer().schedule(new TimerTask() {
@@ -258,7 +260,7 @@ public class HistoryActivity extends AppCompatActivity {
             public void run() {
                 ass.wake_go_on();
             }
-        }, 7000);
+        }, 7000);*/
 
         //控件点按设置
 
