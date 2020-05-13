@@ -34,10 +34,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //init toast
+        //init toast 封装的Toast
         final Toast_ toast = new Toast_();
 
-        // get global state
+        // get global state 全局变量
         final globalstate gl = (globalstate)this.getApplication();
 
         // pos adjust

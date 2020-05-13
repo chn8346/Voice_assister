@@ -19,36 +19,43 @@ import com.iflytek.cloud.WakeuperListener;
 import com.iflytek.cloud.WakeuperResult;
 import com.iflytek.cloud.util.ResourceUtil;
 
-//import org.json.JSONArray;
-//import org.json.JSONException;
-//import org.json.JSONObject;
-//import org.w3c.dom.Text;
-
 import com.huawei.hiai.nlu.model.ResponseResult; //huawei 接口返回的结果类
 import com.huawei.hiai.nlu.sdk.NLUAPIService; //huawei 接口服务类
 import com.huawei.hiai.nlu.sdk.NLUConstants; //huawei 接口常量类
 import com.huawei.hiai.nlu.sdk.OnResultListener; //huawei 异步函数，执行成功的回调结果类
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.alibaba.fastjson.*;
 
 
 public class assistant {
+    //上下文
     private Context context_;
+    //封装的toast
     private Toast_ toast = new Toast_();
+    //语音识别类
     private SpeechRecognizer mIat;
+    //判断初始化状态的数值
     private int state = 0;
+    //测试模式
     private boolean testMode = false;
+    //听到的结果
     private StringBuffer listen_ = new StringBuffer();
+    //对听到的结果的分类
     private String cls_str = "";
+    //文字转语音类
     private speaker speech_speaker;
+    //监听命令类
     private VoiceWakeuper mIvw = null;
+    //所有谈话都存在这里面
     private StringBuffer talkList = new StringBuffer();
+    //显示谈话的文本框
     private TextView view_;
+    //文字转换的可信度
     private int confidence = -1;
+    //命令执行器
     private executeMethod executor;
+    //目前的场景
+    private String scence;
 
     // 构造函数
     public assistant(boolean is_init_utility, Context context, TextView view_)
@@ -56,8 +63,12 @@ public class assistant {
         context_ = context;
         talkList.setLength(0);
         this.view_ = view_;
+
         // 状态判断的变量，如果state后续中小于某个值就会无法执行
         state = 0;
+
+        //清空场景
+        scence = "null";
 
         executor = new executeMethod();
 
@@ -274,10 +285,12 @@ public class assistant {
                 // 对命令进行分类
                 cls_str = classify(listen_.toString());
 
-                // 执行命令
-                excute(cls_str);
+                // TODO 会返回场景，记得承接
+                // 执行命令,scene获取返回的当前场景
+                scence = executor.execute(cls_str);
 
                 // 读出回应（测试模式下为读出使用者的命令）
+                // TODO 加上非测试的输出
                 speech_speaker.doSpeech(listen_.toString());
 
                 // 使得ivw（语音唤醒）恢复
@@ -359,8 +372,7 @@ public class assistant {
         }
         else {
 
-
-            // NLP 分词 --> 好像用不到
+            // NLP 分词 --> 目前好像用不到
             /*
             Json = "{text:'"+words+"',type:1}";
             respResult = NLUAPIService.getInstance().getWordSegment(Json, NLUConstants.REQUEST_TYPE_LOCAL);
@@ -381,12 +393,6 @@ public class assistant {
             Log.d("______CLASSIFY_________", "___MAIN___: " + respResult.getJsonRes());
         }
         return "default";
-    }
-
-    // 执行命令
-    public void excute(String classify)
-    {
-
     }
 
     // 唤醒词使用的路径寻求函数
