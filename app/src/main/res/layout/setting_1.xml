@@ -87,10 +87,52 @@
         android:layout_centerHorizontal="true"
         tools:ignore="SmallSp" />
 
+    <Button
+        android:id="@+id/set_figure_get"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:background="@drawable/settingbtn_13"
+        android:layout_centerHorizontal="true"
+        />
+
     <ImageView
+        android:id="@+id/figure_get_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/img_bit_set_test"
+        android:background="@drawable/figure_background"
+        />
+
+    <ImageView
+        android:id="@+id/figure_get_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:background="#000000"
+        />
+
+    <TextView
+        android:id="@+id/figure_get_next"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:text="下一步"/>
+
+    <TextView
+        android:id="@+id/figure_get_tip"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="25dp"
+        android:text="点击空白区域\n进行人像录入"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/img_finger_print"
+        android:background="@drawable/finger_print"
         />
 
 

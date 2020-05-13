@@ -19,6 +19,12 @@ public class file_writer {
         change_file(fileName);
     }
 
+    public file_writer(Context context, String file)
+    {
+        context_ = context;
+        change_file(file);
+    }
+
     public void change_file(String filename)
     {
         fileName = filename;

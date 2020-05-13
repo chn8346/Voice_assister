@@ -88,6 +88,7 @@ public class executeMethod {
     private void call_phone()
     {
         scene = constr_share.scene_basic_call_phone;
+
     }
 
     // 听音乐
