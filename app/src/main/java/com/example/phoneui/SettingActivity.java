@@ -1,5 +1,6 @@
 package com.example.phoneui;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -15,6 +16,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.tencent.soter.core.model.ConstantsSoter;
+import com.tencent.soter.wrapper.SoterWrapperApi;
+import com.tencent.soter.wrapper.wrap_biometric.SoterBiometricCanceller;
+import com.tencent.soter.wrapper.wrap_biometric.SoterBiometricStateCallback;
+import com.tencent.soter.wrapper.wrap_callback.SoterProcessAuthenticationResult;
+import com.tencent.soter.wrapper.wrap_callback.SoterProcessCallback;
+import com.tencent.soter.wrapper.wrap_callback.SoterProcessKeyPreparationResult;
+import com.tencent.soter.wrapper.wrap_task.AuthenticationParam;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -365,6 +375,61 @@ public class SettingActivity extends AppCompatActivity {
                     if (layoutParams != null) {
                         layoutParams.topMargin = (int) (layoutParams.topMargin - 0.1 * gl.heightSize);
                     }
+
+
+                    // soter指纹识别
+                    /*
+                    SoterWrapperApi.prepareAuthKey(new SoterProcessCallback<SoterProcessKeyPreparationResult>() {
+                        @Override
+                        public void onResult(@NonNull SoterProcessKeyPreparationResult result) {
+
+                        }},false, true, 0, null, null);
+
+                    AuthenticationParam param = new AuthenticationParam.AuthenticationParamBuilder()
+                            .setScene(0)
+                            .setContext(SettingActivity.this)
+                            // fingerprint
+                            .setBiometricType(ConstantsSoter.FINGERPRINT_AUTH)
+                            // faceid
+                            //.setBiometricType(ConstantsSoter.FACEID_AUTH)
+                            .setSoterBiometricCanceller(new SoterBiometricCanceller())
+                            .setPrefilledChallenge("test challenge")
+                            .setSoterBiometricStateCallback(new SoterBiometricStateCallback() {
+                                @Override
+                                public void onStartAuthentication() {
+
+                                }
+
+                                @Override
+                                public void onAuthenticationHelp(int helpCode, CharSequence helpString) {
+
+                                }
+
+                                @Override
+                                public void onAuthenticationSucceed() {
+
+                                }
+
+                                @Override
+                                public void onAuthenticationFailed() {
+
+                                }
+
+                                @Override
+                                public void onAuthenticationCancelled() {
+
+                                }
+
+                                @Override
+                                public void onAuthenticationError(int errorCode, CharSequence errorString) {
+
+                                }}).build();
+                    SoterWrapperApi.requestAuthorizeAndSign(new SoterProcessCallback<SoterProcessAuthenticationResult>() {
+                        @Override
+                        public void onResult(@NonNull SoterProcessAuthenticationResult result) {
+
+                        }}, param);*/
+
                 }
                 else
                 {

@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -35,11 +36,17 @@ import com.huawei.hiai.nlu.sdk.NLUAPIService;
 import com.huawei.hiai.nlu.model.ResponseResult; //huawei 接口返回的结果类
 import com.huawei.hiai.nlu.sdk.NLUConstants; //huawei 接口常量类
 import com.huawei.hiai.nlu.sdk.OnResultListener; //huawei 异步函数，执行成功的回调结果类
+import com.tencent.soter.wrapper.SoterWrapperApi;
+import com.tencent.soter.wrapper.wrap_callback.SoterProcessCallback;
+import com.tencent.soter.wrapper.wrap_callback.SoterProcessNoExtResult;
+import com.tencent.soter.wrapper.wrap_task.InitializeParam;
 
 
 public class HistoryActivity extends AppCompatActivity {
 
     private VideoPlay vp;
+
+    private boolean init_soter = false;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -129,6 +136,23 @@ public class HistoryActivity extends AppCompatActivity {
         }
         else {
             initView(gl.user_mode);
+        }
+
+        // soter 指纹验证模块
+        if(!init_soter) {
+            init_soter = false;
+
+            InitializeParam param = new InitializeParam.InitializeParamBuilder()
+                    .setScenes(0) // 场景值常量，后续使用该常量进行密钥生成或指纹认证
+                    .build();
+            SoterWrapperApi.init(HistoryActivity.this,
+                    new SoterProcessCallback<SoterProcessNoExtResult>() {
+                        @Override
+                        public void onResult(@NonNull SoterProcessNoExtResult result) {
+
+                        }
+                    },
+                    param);
         }
 
 
@@ -401,7 +425,12 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        // NLU释放资源
         NLUAPIService.getInstance().onDestroy();
+
+        // soter验证释放资源
+        SoterWrapperApi.release();
     }
 
     private void restart()

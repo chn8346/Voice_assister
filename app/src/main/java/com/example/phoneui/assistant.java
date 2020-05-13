@@ -366,7 +366,7 @@ public class assistant {
             jsonObject = jsonArray.getJSONObject(0);
             String name = jsonObject.getString("name");
             int confidence = jsonObject.getInteger("confidence");
-            Log.d("______CLASSIFY_________", "___JSON_ANA___: " + name + "CONF" + confidence);
+            Log.d("______CLASSIFY_________", "___JSON_ANA___: " + name + " --> CONF: " + confidence);
             this.confidence = confidence;
             return "intentions_" + name;
         }

@@ -3,11 +3,14 @@ import android.app.Application;
 import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 
+import androidx.annotation.NonNull;
+
 import com.huawei.hiai.nlu.sdk.NLUAPIService;
 import com.huawei.hiai.nlu.sdk.OnResultListener;
 import com.iflytek.cloud.Setting;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
+
 
 import java.lang.reflect.Method;
 // 全局变量类

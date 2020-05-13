@@ -21,6 +21,9 @@ android {
 }
 
 repositories {
+    maven {
+        url "https://dl.bintray.com/tencent-soter/maven/"
+    }
     flatDir {
         dirs 'libs'
     }
@@ -28,6 +31,7 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.tencent.soter:soter-wrapper:2.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation(name: 'huawei-hiai-nlu-10.0.4.307', ext: 'aar')
     implementation(name: 'huawei-hiai-vision-10.0.4.307', ext: 'aar')
