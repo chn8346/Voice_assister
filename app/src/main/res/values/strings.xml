@@ -14,4 +14,7 @@
     <string name="todo">TODO</string>
     <string name="blind_mode_quit">盲人模式，点击此退出</string>
     <string name="app_id">5eb4d530</string>
+    <string name="task_complete">task_complete</string>
+    <string name="task_not_complete">task_not_complete</string>
+    <string name="task_complete_template">task_complete_template</string>
 </resources>

@@ -3,11 +3,13 @@ package com.example.phoneui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +39,7 @@ public class SettingActivity extends AppCompatActivity {
         Button button5 = (Button) findViewById(R.id.settingbtn_5);
         Button button6 = (Button) findViewById(R.id.settingbtn_6);
         TextView title = (TextView) findViewById(R.id.set_title);
+        final ImageView img = (ImageView) findViewById(R.id.img_bit_set_test);
 
         float ADV_height_property = (float) 0.2;
 
@@ -46,6 +49,10 @@ public class SettingActivity extends AppCompatActivity {
             layoutParams.topMargin = (int) (gl.heightSize * ADV_height_property);
         }
         title.setText("高级设置");
+
+        // 测试的图片暂时隐藏
+        img.setVisibility(View.GONE);
+
 
         ADV_height_property = (float) (ADV_height_property + 0.2);
         float size_up = (float) 0.8;
@@ -186,6 +193,16 @@ public class SettingActivity extends AppCompatActivity {
                     //Toast.makeText(SettingActivity.this, "压感识别已开启，请确认有压感传感器", Toast.LENGTH_SHORT).show();
                 }
                 gl.forceSense = !gl.forceSense;
+
+                //测试截图功能
+                /*
+                v.setDrawingCacheEnabled(true);
+                v.buildDrawingCache(true);
+
+                Bitmap b = Bitmap.createBitmap(v.getDrawingCache());
+                v.setDrawingCacheEnabled(false); // clear drawing cache
+                img.setImageBitmap(b);
+                img.setVisibility(View.VISIBLE);*/
             }
         });
 

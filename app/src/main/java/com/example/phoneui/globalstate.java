@@ -1,11 +1,15 @@
 package com.example.phoneui;
 import android.app.Application;
+import android.graphics.Bitmap;
+import android.util.DisplayMetrics;
 
 import com.huawei.hiai.nlu.sdk.NLUAPIService;
 import com.huawei.hiai.nlu.sdk.OnResultListener;
 import com.iflytek.cloud.Setting;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
+
+import java.lang.reflect.Method;
 // 全局变量类
 
 public class globalstate extends Application{
@@ -23,6 +27,7 @@ public class globalstate extends Application{
     // 屏幕参数
     public int heightSize = 1960;
     public int widthSize = 1080;
+    public Bitmap screenBitmap;
 
     // 状态参数
     public String user_mode = "normal"; // ***FILE*** Y
@@ -70,4 +75,18 @@ public class globalstate extends Application{
             file_edit.write(constr_share.huawei_nlu_api_use_time, this.HW_nlu_use_time);
         }
 
+    private void screenShotByReflect(){
+        DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+        float[] dims = { mDisplayMetrics.widthPixels,
+                mDisplayMetrics.heightPixels };
+        try {
+            Class<?> demo = Class.forName("android.view.SurfaceControl");
+            Method method = demo.getDeclaredMethod("screenshot", int.class,int.class);
+            screenBitmap = (Bitmap) method.invoke(null,(int) dims[0],(int) dims[1]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+
+}

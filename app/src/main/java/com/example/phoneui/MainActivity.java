@@ -22,6 +22,11 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechRecognizer;
 import com.iflytek.cloud.SpeechUtility;
 
+/*
+* 此界面已被废弃
+* HistoryActivity为主界面
+* */
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

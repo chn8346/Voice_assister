@@ -1,34 +1,28 @@
 package com.example.phoneui;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
+import android.accessibilityservice.AccessibilityService;
+import android.view.accessibility.AccessibilityEvent;
 
-public class blind_server extends Service {
-    public blind_server() {
+
+/**
+ * This class demonstrates how an accessibility service can query
+ * window content to improve the feedback given to the user.
+ */
+public class blind_server extends AccessibilityService{
+
+    @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-    }
+    public void onInterrupt() {
 
-    // 服务启动时的操作
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
     }
-
-    // 服务销毁时的操作
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
 }
