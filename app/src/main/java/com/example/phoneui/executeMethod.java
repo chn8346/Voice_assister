@@ -29,7 +29,8 @@ public class executeMethod {
     private Context context_;
 
     // 联系人列表
-    List<String> contactsList = new ArrayList<>();
+    JSONObject contactList = new JSONObject();
+    private boolean import_contact = false;
 
     // 场景记录
     private String scene;
@@ -147,6 +148,12 @@ public class executeMethod {
 
     private void phone_call()
     {
+        // 没读过联系人就读取一次到list里面
+        if(!import_contact)
+        {
+            readContacts();
+        }
+
         if(parament == null)
         {
             // todo --> cope later
@@ -172,6 +179,28 @@ public class executeMethod {
 
                     String name = parament.getString("name");
                     String name_type = parament.getString("nameType");
+                    String phone_number = contactList.getString(name);
+
+                    //权限检查
+                    if (ContextCompat.checkSelfPermission(context_,
+                            Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        //申请权限
+                        ActivityCompat.requestPermissions((Activity) context_,
+                                new String[]{Manifest.permission.CALL_PHONE}, 1);
+                    }
+
+                    //创建打电话的意图
+                    Intent intent_name = new Intent();
+                    //设置拨打电话的动作
+                    intent_name.setAction(Intent.ACTION_CALL);
+                    //设置拨打电话的号码
+                    intent_name.setData(Uri.parse("tel:" + phone_number));
+                    //开启打电话的意图
+                    context_.startActivity(intent_name);
+
+                    //Intent intent0 = new Intent("android.intent.action.HISTORY");
+                    //context_.startActivity(intent0);
+
                     break;
 
                 case 1:
@@ -207,6 +236,7 @@ public class executeMethod {
     // 听音乐
     private void openMusic()
     {
+
         scene = constr_share.scene_basic_open_music;
     }
 
@@ -248,7 +278,7 @@ public class executeMethod {
     }
 
     // 读取联系人
-    private String readContacts(String name) {
+    private void readContacts() {
 
         Cursor cursor = null;
 
@@ -264,9 +294,10 @@ public class executeMethod {
                     // 获取联系人手机号
                     String number = cursor.getString(cursor.getColumnIndex
                             (ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    contactsList.add(displayName + "\n" + number);
+                    contactList.put(displayName, number);
                 }
             }
+            import_contact = true;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -274,6 +305,6 @@ public class executeMethod {
                 cursor.close();
             }
         }
-        return "1";
     }
+
 }
