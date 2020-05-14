@@ -1,27 +1,11 @@
 package com.example.phoneui;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
+
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
+
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.MemoryFile;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.BackgroundColorSpan;
+
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.widget.EditText;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.Toast;
 
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
@@ -33,12 +17,6 @@ import com.iflytek.cloud.SynthesizerListener;
 import com.iflytek.cloud.msc.util.FileUtil;
 import com.iflytek.cloud.msc.util.log.DebugLog;
 
-import java.io.Console;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Vector;
 
 public class speaker {
 

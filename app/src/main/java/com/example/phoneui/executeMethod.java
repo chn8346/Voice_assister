@@ -1,6 +1,23 @@
 package com.example.phoneui;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.alibaba.fastjson.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class executeMethod {
     private StringBuffer buffer;
@@ -9,15 +26,20 @@ public class executeMethod {
     private StringBuffer where;
     private StringBuffer what;
 
-    // 场景区分
+    private Context context_;
+
+    // 联系人列表
+    List<String> contactsList = new ArrayList<>();
+
+    // 场景记录
     private String scene;
 
     // 参数
-    private String parament = "null";
+    private JSONObject parament;
 
     // 按照命令分类执行,返回助手工作的场景是什么（字符串）
     // 这个是完整的，第二个参数可以省略，下面有一个重载
-    public String execute(String Classify_order, String para)
+    public String execute(String Classify_order, JSONObject para)
     {
         parament = para;
 
@@ -40,19 +62,7 @@ public class executeMethod {
     // 这个是少了参量的重载函数
     public String execute(String Classify_order)
     {
-        return execute(Classify_order, "null");
-    }
-
-    // 构造函数
-    public executeMethod()
-    {
-        // 初始变量
-        buffer = new StringBuffer();
-        who = new StringBuffer();
-        when = new StringBuffer();
-        where = new StringBuffer();
-        what = new StringBuffer();
-        scene = "null";
+        return execute(Classify_order, null);
     }
 
     // 基础的几个命令集成
@@ -61,9 +71,6 @@ public class executeMethod {
         str = str.substring(0, str.indexOf("_basic_function"));
         switch (str)
         {
-            case constr_share.order_basic_call_phone:
-                call_phone();
-                break;
             case constr_share.order_basic_open_music:
                 openMusic();
                 break;
@@ -84,11 +91,117 @@ public class executeMethod {
         scene = constr_share.order_UNKNOWN;
     }
 
-    // 打电话
-    private void call_phone()
+    // 官方设置的执行
+    private void intention_execute(String str)
     {
-        scene = constr_share.scene_basic_call_phone;
+        str = str.split("intentions_")[1];
+        switch (str)
+        {
+            case constr_share.order_basic_call_phone:
+                phone_call();
+                scene = constr_share.scene_official_call_phone;
+                Log.d("EXECUTE", "CALL");
+                break;
 
+            case constr_share.order_official_open4G:
+                scene = constr_share.scene_official_setting;
+                Log.d("EXECUTE", "open4G");
+                break;
+
+            case constr_share.order_official_close4G:
+                scene = constr_share.scene_official_setting;
+                Log.d("EXECUTE", "close4G");
+                break;
+
+            case constr_share.order_official_open_wlan:
+                scene = constr_share.scene_official_setting;
+                Log.d("EXECUTE", "openWlan");
+                break;
+
+            case constr_share.order_official_close_wlan:
+                scene = constr_share.scene_official_setting;
+                Log.d("EXECUTE", "closeWlan");
+                break;
+
+            case constr_share.order_official_set_wlan:
+                scene = constr_share.scene_official_setting;
+                Log.d("EXECUTE", "setWlan");
+                break;
+
+            case constr_share.order_official_disconnect_wlan:
+                scene = constr_share.scene_official_setting;
+                Log.d("EXECUTE", "disconnectWlan");
+                break;
+
+            case constr_share.order_official_openHotspot:
+                scene = constr_share.scene_official_setting;
+                Log.d("EXECUTE", "openHotspot");
+                break;
+
+            default:
+                scene = constr_share.scene_official_setting;
+                Log.d("EXECUTE", "NO_ACTION");
+                break;
+        }
+    }
+
+    private void phone_call()
+    {
+        if(parament == null)
+        {
+            // todo --> cope later
+            Log.d("____CALL____", "_NO_JSON_INFO");
+            return;
+        }
+        else
+        {
+            int type = 0;
+            Log.d("____CALL____", "_JSON_INFO_DETECTED");
+            // test call type
+            if(parament.getString("name") == null)
+            {
+                type = 1;
+            }
+
+            Log.d("____CALL____", "TYPE : " + type);
+
+            switch (type)
+            {
+                case 0:
+                    Log.d("____CALL____", "CALL_IN_BOOK");
+
+                    String name = parament.getString("name");
+                    String name_type = parament.getString("nameType");
+                    break;
+
+                case 1:
+
+                    Log.d("____CALL____", "NUMBER_CALL_ " + parament.getString("number"));
+
+                    //权限检查
+                    if (ContextCompat.checkSelfPermission(context_,
+                            Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        //申请权限
+                        ActivityCompat.requestPermissions((Activity) context_,
+                                new String[]{Manifest.permission.CALL_PHONE}, 1);
+                    }
+
+                    // 号码
+                    String number = parament.getString("number");
+                    //创建打电话的意图
+                    Intent intent = new Intent();
+                    //设置拨打电话的动作
+                    intent.setAction(Intent.ACTION_CALL);
+                    //设置拨打电话的号码
+                    intent.setData(Uri.parse("tel:" + number));
+                    //开启打电话的意图
+                    context_.startActivity(intent);
+                    //Intent intent0 = new Intent("android.intent.action.HISTORY");
+                    //context_.startActivity(intent0);
+                    break;
+            }
+
+        }
     }
 
     // 听音乐
@@ -115,51 +228,52 @@ public class executeMethod {
         scene = constr_share.scene_basic_search;
     }
 
-
     // 聊天对话
-    private String talk()
+    private void talk()
     {
         scene = constr_share.scene_basic_talk;
-        return scene;
     }
 
-
-    // 官方设置的执行
-    private void intention_execute(String str)
+    // 构造函数
+    public executeMethod(Context context)
     {
-        str = str.split("intentions_")[1];
-        switch (str)
-        {
-            case "open4G":
-                Log.d("EXECUTE", "open4G");
-                break;
+        // 初始变量
+        context_ = context;
+        buffer = new StringBuffer();
+        who = new StringBuffer();
+        when = new StringBuffer();
+        where = new StringBuffer();
+        what = new StringBuffer();
+        scene = "null";
+    }
 
-            case "close4G":
-                Log.d("EXECUTE", "close4G");
-                break;
+    // 读取联系人
+    private String readContacts(String name) {
 
-            case "openWlan":
-                Log.d("EXECUTE", "openWlan");
-                break;
+        Cursor cursor = null;
 
-            case "closeWlan":
-                Log.d("EXECUTE", "closeWlan");
-                break;
-
-            case "setWlan":
-                Log.d("EXECUTE", "setWlan");
-                break;
-
-            case "disconnectWlan":
-                Log.d("EXECUTE", "disconnectWlan");
-                break;
-
-            case "openHotspot":
-                Log.d("EXECUTE", "openHotspot");
-                break;
-
-            default:
-                break;
+        try {
+            // 查询联系人数据
+            cursor = context_.getContentResolver().query(ContactsContract.CommonDataKinds.
+                    Phone.CONTENT_URI, null, null, null, null);
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    // 获取联系人姓名
+                    String displayName = cursor.getString(cursor.getColumnIndex
+                            (ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                    // 获取联系人手机号
+                    String number = cursor.getString(cursor.getColumnIndex
+                            (ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    contactsList.add(displayName + "\n" + number);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
+        return "1";
     }
 }

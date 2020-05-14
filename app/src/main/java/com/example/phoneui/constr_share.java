@@ -21,13 +21,13 @@ public class constr_share {
     public static final String order_UNKNOWN = "UNKNOWN"; // 未知命令
         //基础命令
     public static final String order_basic_open_music = "open_music";
-    public static final String order_basic_call_phone = "call_phone";
     public static final String order_basic_open_app = "open_app";
     public static final String order_basic_Message = "msg";
     public static final String order_basic_search = "search";
     public static final String order_basic_talk = "talk";
         //官方设置
     public static final String order_official_open4G = "open4G";
+    public static final String order_basic_call_phone = "call";
     public static final String order_official_close4G = "close4G";
     public static final String order_official_open_wlan = "openWlan";
     public static final String order_official_close_wlan = "closeWlan";
@@ -37,7 +37,6 @@ public class constr_share {
 
     // 命令场景
         //基础场景
-    public static final String scene_basic_call_phone = "scene_call_phone";
     public static final String scene_basic_open_music = "scene_open_music";
     public static final String scene_basic_open_app = "scene_open_app";
     public static final String scene_basic_Message = "scene_msg";
@@ -45,6 +44,7 @@ public class constr_share {
     public static final String scene_basic_talk = "scene_talk";
         //官方设置场景
     public static final String scene_official_setting = "scene_setting_official";
+    public static final String scene_official_call_phone = "scene_call_phone";
 
 
 

@@ -38,6 +38,7 @@ public class assistant {
     private int state = 0;
     //测试模式
     private boolean testMode = false;
+    private boolean ivw_off = true;
     //听到的结果
     private StringBuffer listen_ = new StringBuffer();
     //对听到的结果的分类
@@ -56,6 +57,8 @@ public class assistant {
     private executeMethod executor;
     //目前的场景
     private String scence;
+    //命令的附加信息
+    private JSONObject addition_json;
 
     // 构造函数
     public assistant(boolean is_init_utility, Context context, TextView view_)
@@ -70,7 +73,7 @@ public class assistant {
         //清空场景
         scence = "null";
 
-        executor = new executeMethod();
+        executor = new executeMethod(context_);
 
         if(is_init_utility)
         {
@@ -83,8 +86,9 @@ public class assistant {
             speech_speaker = new speaker(context_);
 
             // 唤醒器
-            mIvw = VoiceWakeuper.createWakeuper(context_, null);
-
+            if(!ivw_off) {
+                mIvw = VoiceWakeuper.createWakeuper(context_, null);
+            }
             // NLU接口
 
         }
@@ -121,6 +125,9 @@ public class assistant {
     // 唤醒方法封装
     public void init_wake()
     {
+        if(ivw_off)
+            return;
+
         if(mIvw == null)
         {
             mIvw = VoiceWakeuper.createWakeuper(context_, null);
@@ -177,6 +184,8 @@ public class assistant {
     // 唤醒暂停
     public void wake_pause()
     {
+        if(ivw_off)
+            return;
         if(mIvw != null){
             mIvw.stopListening();
         }
@@ -185,6 +194,8 @@ public class assistant {
     // 唤醒保持继续
     public void wake_go_on()
     {
+        if(ivw_off)
+            return;
         if(mIvw != null) {
             mIvw.startListening(mWakeuperListener);
         }
@@ -201,7 +212,7 @@ public class assistant {
     public void init_listener()
     {
         //使得ivw直接中断
-        mIvw.stopListening();
+        if(!ivw_off){mIvw.stopListening();}
 
         if(state < 1) {
             toast.show(context_, "初始化错误", toast.short_time_len);
@@ -285,20 +296,22 @@ public class assistant {
                 // 对命令进行分类
                 cls_str = classify(listen_.toString());
 
-                // TODO 会返回场景，记得承接
-                // 执行命令,scene获取返回的当前场景
-                scence = executor.execute(cls_str);
-
                 // 读出回应（测试模式下为读出使用者的命令）
                 // TODO 加上非测试的输出
-                speech_speaker.doSpeech(listen_.toString());
+                //speech_speaker.doSpeech(listen_.toString());
 
-                // 使得ivw（语音唤醒）恢复
-                mIvw.startListening(mWakeuperListener);
+                // TODO 会返回场景，记得承接
+                // 执行命令,scene获取返回的当前场景
+                scence = executor.execute(cls_str, addition_json);
 
                 // 修改主界面的文字，将TextView变成对话框
                 load_talk(listen_.toString(), view_);
 
+
+                // 使得ivw（语音唤醒）恢复
+                if(!ivw_off) {
+                    mIvw.startListening(mWakeuperListener);
+                }
             }
 
             @Override
@@ -366,6 +379,15 @@ public class assistant {
             jsonObject = jsonArray.getJSONObject(0);
             String name = jsonObject.getString("name");
             int confidence = jsonObject.getInteger("confidence");
+
+            // 获取额外信息
+            try {
+                addition_json = jsonObject.getJSONArray("attributes").getJSONObject(0);
+            } catch (Exception e) {
+                addition_json = null;
+                e.printStackTrace();
+            }
+
             Log.d("______CLASSIFY_________", "___JSON_ANA___: " + name + " --> CONF: " + confidence);
             this.confidence = confidence;
             return "intentions_" + name;
@@ -429,7 +451,9 @@ public class assistant {
             // 先立一个条件，未来需要再改
             if(true)
             {
-                mIvw.stopListening();
+                if(!ivw_off) {
+                    mIvw.stopListening();
+                }
                 assistant_listen();
             }
 

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.huawei.agconnect'
 
 android {
     compileSdkVersion 29
@@ -46,4 +47,8 @@ dependencies {
     implementation files('libs/Msc.jar')
     implementation files('libs/fastjson-1.2.68.jar')
     implementation 'org.jetbrains:annotations-java5:15.0'
+
+    implementation 'com.huawei.hms:fido-fido2:4.0.3.300'
+    implementation 'com.huawei.hms:fido-bioauthn-androidx:4.0.3.300'
+    //implementation 'com.huawei.hms:fido-bioauthn:4.0.3.300'
 }
