@@ -141,8 +141,10 @@ public class HistoryActivity extends AppCompatActivity {
         // 盲人模式下打开盲人无障碍服务
         if(gl.user_mode.equals(constr_share.k_user_mode_Blind))
         {
-            
+            Log.d("user_mode", "onCreate: user_mode blind");
         }
+        Intent intent_ = new Intent(this, blind_server.class);
+        startService(intent_);
 
         // soter 指纹验证模块
         if(!init_soter) {

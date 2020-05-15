@@ -57,6 +57,8 @@ public class blind_server extends AccessibilityService{
 
             // 将悬浮窗控件添加到WindowManager
             //windowManager.addView(button, layoutParams);
+
+            Log.d("_ACCESS_Event__", "START SERVICE: BLIND SERVICE START_ED");
         }
     }
 
@@ -65,7 +67,8 @@ public class blind_server extends AccessibilityService{
         JSONObject json = new JSONObject();
         json.put("type", event.getEventType());
         json.put("package", event.getPackageName().toString());
-        Log.d("__Event__", json.toJSONString());
+
+        Log.d("_ACCESS_Event__", json.toJSONString());
     }
 
     @Override
@@ -81,8 +84,11 @@ public class blind_server extends AccessibilityService{
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         init_window_manager = false;
         //windowManager.removeView(button);
+
+        Log.d("_ACCESS_Event__", "STOP SERVICE: BLIND SERVICE STOP_ED");
     }
 
 
