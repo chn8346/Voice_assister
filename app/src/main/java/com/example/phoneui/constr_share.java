@@ -16,6 +16,9 @@ public class constr_share {
     public static final String k_user_mode_mute = "CAN_NOT_SPEAK";
     public static final String k_user_mode_deaf_no_mute = "HALF_DEAF";
 
+    // 搜索的网页命令
+    public static final String search_baidu = "https://www.baidu.com/s?ie=UTF-8&wd=";
+
     // 命令分类
         // 特殊情况反馈
     public static final String order_UNKNOWN = "UNKNOWN"; // 未知命令
@@ -47,7 +50,8 @@ public class constr_share {
     public static final String scene_official_call_phone = "scene_call_phone";
 
 
-
+    // 信息分类的TAG
+    public static final String tag_basic = "_basic_function";
 
     public constr_share() {
 

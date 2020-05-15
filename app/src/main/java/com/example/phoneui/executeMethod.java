@@ -2,12 +2,15 @@ package com.example.phoneui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
@@ -29,8 +32,13 @@ public class executeMethod {
     private Context context_;
 
     // 联系人列表
-    JSONObject contactList = new JSONObject();
+    private JSONObject contactList = new JSONObject();
     private boolean import_contact = false;
+
+    // APP列表
+    private List<PackageInfo> app_list;
+    private JSONObject quick_appinfo = new JSONObject();
+    private boolean get_app_list = false;
 
     // 场景记录
     private String scene;
@@ -231,6 +239,8 @@ public class executeMethod {
             }
 
         }
+
+        scene = constr_share.scene_official_call_phone;
     }
 
     // 听音乐
@@ -243,18 +253,100 @@ public class executeMethod {
     // 打开APP
     private void openAPP()
     {
+        if(parament != null)
+        {
+            if(parament.containsKey("app_name")) {
+                String app_name = parament.getString("app_name");
+                // String package_name = quick_appinfo.getString(app_name);
+                Log.d("___OPEN___APP___", "openAPP: " + app_name);
+                Intent intent = context_.getPackageManager().getLaunchIntentForPackage(app_name);
+                if (intent != null) {
+                    //intent.putExtra("type", "110");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context_.startActivity(intent);
+                }
+            }
+        }
+
         scene = constr_share.scene_basic_open_app;
     }
 
     // 发短信
     private void sentMsg()
     {
+
+        // 权限检查
+        if (ContextCompat.checkSelfPermission(context_,
+                Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            //申请权限
+            ActivityCompat.requestPermissions((Activity) context_,
+                    new String[]{Manifest.permission.SEND_SMS}, 1);
+        }
+
+        // 编辑短信
+        SmsManager sms = SmsManager.getDefault();
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context_, 0, new Intent(), 0);
+
+            //获取联系人
+            String contactor = "我";
+            String phoneNumber = "null";
+            if(parament.containsKey("num"))
+            {
+                // 有号码直接复制号码
+                phoneNumber = parament.getString("num");
+            }
+            else {
+                // 确认有没有联系人，没有直接返回null
+                if(parament.containsKey("contactor")) {
+                    contactor = parament.getString("contactor");
+
+                    // 有联系人信息找联系人
+                    if (!import_contact) {
+                        readContacts();
+                    }
+
+                    if (contactList.containsKey(contactor)) {
+                        phoneNumber = contactList.getString(contactor);
+                    }
+                }
+            }
+
+            // 获取短信内容
+            String MsgStr = "";
+            if(parament.containsKey("msgStr"))
+            {
+                MsgStr = parament.getString("msgStr");
+            }
+
+        if(MsgStr.equals("") || phoneNumber.equals("null")) {
+            Log.d("_CLASSIFY_MSM_", "NUM: " + phoneNumber + " STR: " + MsgStr);
+        }
+        else
+        {
+            sms.sendTextMessage(phoneNumber, null, MsgStr, pendingIntent, null);
+            Log.d("_CLASSIFY_MSM_", "NUM: " + phoneNumber + " STR: " + MsgStr);
+        }
+
         scene = constr_share.scene_basic_Message;
     }
 
     // 网络查阅资料
     private void search()
     {
+        //Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+        String search_content = "";
+        if(parament.containsKey("search_content")) {
+            search_content = parament.getString("search_content");
+        }
+        Log.d("_CLASSIFY_SEARCH_BAI_DU", "content: " + search_content);
+        String website = constr_share.search_baidu;
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        Uri content_url = Uri.parse(website + search_content);
+        intent.setData(content_url);
+        intent.setClassName("com.android.browser","com.android.browser.BrowserActivity");
+        context_.startActivity(intent);
+
         scene = constr_share.scene_basic_search;
     }
 

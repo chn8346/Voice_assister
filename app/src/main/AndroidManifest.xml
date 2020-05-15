@@ -25,6 +25,9 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera2" />
 
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+
     <application
         android:name=".globalstate"
         android:allowBackup="true"
@@ -115,15 +118,6 @@
         <activity android:name=".AboutsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.ABOUT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".sound_identify"
-            android:theme="@style/Transparent">
-            <intent-filter>
-                <action android:name="android.intent.action.IDENTIFY" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

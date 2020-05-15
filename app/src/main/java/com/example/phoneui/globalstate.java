@@ -41,6 +41,10 @@ public class globalstate extends Application{
     public int HW_nlu_use_time = 0;  // ***FILE*** Y
     public boolean Hw_nlu_start = false;
 
+    // 搜索引擎
+    public String search_engine = constr_share.search_baidu;
+    public String music_engine = "QQ";
+
     // 测试使用参数
     public boolean testMode = false;
     //public int test_times = 0;

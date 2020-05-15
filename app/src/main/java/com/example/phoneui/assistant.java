@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.JsonObject;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerListener;
 import com.iflytek.cloud.RecognizerResult;
@@ -292,20 +293,20 @@ public class assistant {
                     toast.show(context_, "录音结束", 300);
                 }
 
+                // 修改主界面的文字，将TextView变成对话框
+                load_talk(listen_.toString(), view_);
+
+                // 读出回应（测试模式下为读出使用者的命令）
+                // TODO 加上非测试的输出
+                speech_speaker.doSpeech(listen_.toString());
 
                 // 对命令进行分类
                 cls_str = classify(listen_.toString());
 
-                // 读出回应（测试模式下为读出使用者的命令）
-                // TODO 加上非测试的输出
-                //speech_speaker.doSpeech(listen_.toString());
-
                 // TODO 会返回场景，记得承接
                 // 执行命令,scene获取返回的当前场景
-                scence = executor.execute(cls_str, addition_json);
 
-                // 修改主界面的文字，将TextView变成对话框
-                load_talk(listen_.toString(), view_);
+                //scence = executor.execute(cls_str, addition_json);
 
 
                 // 使得ivw（语音唤醒）恢复
@@ -401,18 +402,55 @@ public class assistant {
 
             Log.d("______CLASSIFY_________", "___SEG___: " + respResult.getJsonRes());
             */
-
             // 词性分析
             Json = "{text:'" + words + "',type:1}"; // TODO 调节细粒度  9223372036854775807
             respResult = NLUAPIService.getInstance().getWordPos(Json, NLUConstants.REQUEST_TYPE_LOCAL);
 
             Log.d("______CLASSIFY_________", "___WORD___: " + respResult.getJsonRes());
+            // 词性分析结果
+            String WordPos = respResult.getJsonRes();
+            JSONObject word_json = JSON.parseObject(WordPos);
 
-            // 特定内容的截取分析
+
+            // 实体分析
             Json = Json = "{text:'" + words + "'}";
             respResult = NLUAPIService.getInstance().getEntity(Json, NLUConstants.REQUEST_TYPE_LOCAL);
 
             Log.d("______CLASSIFY_________", "___MAIN___: " + respResult.getJsonRes());
+            // 实体分析结果
+            String Entity_ana = respResult.getJsonRes();
+            JSONObject entity_json = JSON.parseObject(Entity_ana);
+
+            // 识别是否是打开APP的命令
+            String app_package = app_search(entity_json, word_json);
+            if(!app_package.equals("null"))
+            {
+                // 传参执行
+                JSONObject sub_json = new JSONObject();
+                sub_json.put("app_name", app_package);
+                executor.execute(constr_share.order_basic_open_app+"_basic_function", sub_json);
+            }
+
+            // 识别是否是发短信
+            JSONObject json_MSG = check_message(entity_json, word_json);
+                // 确认是短信
+            if(json_MSG.containsKey("is_message"))
+            {
+                executor.execute(constr_share.order_basic_Message + constr_share.tag_basic, json_MSG);
+            }
+
+
+
+            // 识别是否是是搜索命令
+            String content = search_order(entity_json, word_json,listen_.toString());
+            if(!content.equals("null")) {
+                Log.d("_CLASSIFY_SEARCH_", "content: " + content);
+
+                JSONObject json_search = new JSONObject();
+                json_search.put("search_content", content);
+
+                executor.execute(constr_share.order_basic_search + constr_share.tag_basic, json_search);
+            }
         }
         return "default";
     }
@@ -474,4 +512,132 @@ public class assistant {
 
         }
     };
+
+    private String app_search(JSONObject entity_json, JSONObject word_json)
+    {
+        package_scaner app = new package_scaner(context_);
+
+        // 实体的检验结果
+        if(entity_json.containsKey("entity")) // 有entity结果才分析
+        {
+            JSONObject sub_json = entity_json.getJSONObject("entity");
+            if(sub_json.containsKey("app")) // 含有app类目才继续
+            {
+                sub_json = sub_json.getJSONArray("app").getJSONObject(0);
+                String package_name = app.find_package_name(sub_json.getString("name"));
+
+                // 找不到APP返回 “Null”
+                if(package_name == null)
+                {
+                    return "null";
+                }
+                return package_name;
+            }
+        }
+
+        return "null";
+        // 词性的建议结果 todo 词性分析，暂时懒不写了
+    }
+
+    private String search_order(JSONObject entity_json, JSONObject word_json, String listen)
+    {
+        //  搜索内容
+        String search_content = "";
+
+        // 如果有实体，就搜索实体
+        if(entity_json.containsKey("entity"))
+        {
+            // todo 由于大概率用不到，暂时空着
+        }
+
+        String[] key_word_arr = {"搜索", "查找", "查查", "查一下"};
+        // 直接检测关键词
+        for(int i = 0; i < key_word_arr.length; i++)
+        {
+            if(listen.contains(key_word_arr[i]))
+            {
+                return listen.substring((listen.indexOf(key_word_arr[i]) + key_word_arr[i].length()));
+            }
+        }
+
+
+        // 词性检测
+        if(word_json.containsKey("pos")) {
+
+            JSONArray word_arr = word_json.getJSONArray("pos");
+            JSONObject word = new JSONObject();
+
+            int arr_size = word_arr.size();
+
+            //String[] contain_word_tag = {"v","t","n"}
+
+            for(int i = 0; i <arr_size; i++)
+            {
+                word = word_arr.getJSONObject(i);
+
+            }
+
+        }
+        return "null";
+    }
+
+    private JSONObject check_message(JSONObject entity_json, JSONObject word_json)
+    {
+        String listen = listen_.toString();
+        final JSONObject json_MSG = new JSONObject();
+
+        // 直接检测 todo 测试功能使用，还要改
+        if(listen.contains("短信")) {
+            json_MSG.put("is_message", true);
+            json_MSG.put("contactor", "我");
+
+
+            //speech_speaker.doSpeech("告诉我短信内容");
+
+            final StringBuffer Msgcontents = new StringBuffer();
+            Msgcontents.setLength(0);
+
+            if (!ivw_off) {
+                if (mIvw.isListening()) {
+                    // 如果ivw运行就关掉
+                    mIvw.stopListening();
+                }
+            }
+
+            mIat.startListening(new RecognizerListener() {
+                @Override
+                public void onVolumeChanged(int i, byte[] bytes) {
+
+                }
+
+                @Override
+                public void onBeginOfSpeech() {
+
+                }
+
+                @Override
+                public void onEndOfSpeech() {
+                    json_MSG.put("msgStr", Msgcontents);
+                }
+
+                @Override
+                public void onResult(RecognizerResult recognizerResult, boolean b) {
+                    Msgcontents.append(recognizerResult.getResultString());
+                }
+
+                @Override
+                public void onError(SpeechError speechError) {
+
+                }
+
+                @Override
+                public void onEvent(int i, int i1, int i2, Bundle bundle) {
+
+                }
+            });
+        }
+        return json_MSG;
+
+    }
+
 }

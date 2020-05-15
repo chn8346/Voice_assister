@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +26,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.iflytek.cloud.SpeechUtility;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -267,6 +266,22 @@ public class HistoryActivity extends AppCompatActivity {
         }
 
 
+        // log 输出应用信息
+        /*
+        PackageManager packageManager = HistoryActivity.this.getPackageManager();
+        List<PackageInfo> app_list = packageManager.getInstalledPackages(0);
+
+        int len = app_list.size();
+        for(int i = 0; i < len; i++)
+        {
+            PackageInfo info = app_list.get(i);
+            if(info.packageName.equals("com.example.phoneui"))
+            {
+                //Log.d("____APP___INFO___", info.sharedUserId.toString());
+                Log.d("____APP___INFO___", packageManager.getApplicationLabel(info.applicationInfo).toString());
+            }
+        }
+        */
 
         /*
          *
@@ -285,6 +300,8 @@ public class HistoryActivity extends AppCompatActivity {
                 ass.wake_go_on();
             }
         }, 7000);*/
+
+        speech_speaker.doSpeech("我是复读机,嘤嘤嘤");
 
         //控件点按设置
 

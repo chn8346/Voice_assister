@@ -40,7 +40,7 @@ public class sound_identify{
     private globalstate gl;
     private file_writer file_edit;
 
-    protected sound_identify(Context context, globalstate gl_, file_writer file_edit_) {
+    public sound_identify(Context context, globalstate gl_, file_writer file_edit_) {
 
         // 初始化变量
         context_ = context;
