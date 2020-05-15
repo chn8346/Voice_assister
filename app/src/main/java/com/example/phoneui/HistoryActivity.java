@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -135,6 +136,12 @@ public class HistoryActivity extends AppCompatActivity {
         }
         else {
             initView(gl.user_mode);
+        }
+
+        // 盲人模式下打开盲人无障碍服务
+        if(gl.user_mode.equals(constr_share.k_user_mode_Blind))
+        {
+            
         }
 
         // soter 指纹验证模块
@@ -457,6 +464,15 @@ public class HistoryActivity extends AppCompatActivity {
         assert i != null;
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
+    }
+
+    private void set_window()
+    {
+        // 非盲人模式进行悬浮窗权限设置
+        globalstate gl = (globalstate) this.getApplication();
+        if(!gl.user_mode.equals(constr_share.k_user_mode_Blind)) {
+            startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName())));
+        }
     }
 
 }
