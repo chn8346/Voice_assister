@@ -428,13 +428,12 @@ public class assistant {
                 // 传参执行
                 JSONObject sub_json = new JSONObject();
                 sub_json.put("app_name", app_package);
-                executor.execute(constr_share.order_basic_open_app+"_basic_function", sub_json);
+                executor.execute(constr_share.order_basic_open_app, sub_json);
             }
 
             // 识别是否是发短信,如果是就直接发送
             // （这个由于读写是异步的原因，所以执行和判断放一起）
             send_message(entity_json, word_json);
-
 
 
             // 识别是否是是搜索命令
@@ -445,7 +444,7 @@ public class assistant {
                 JSONObject json_search = new JSONObject();
                 json_search.put("search_content", content);
 
-                executor.execute(constr_share.order_basic_search + constr_share.tag_basic, json_search);
+                executor.execute(constr_share.order_basic_search, json_search);
             }
         }
         return "default";
@@ -612,7 +611,7 @@ public class assistant {
                 @Override
                 public void onEndOfSpeech() {
                     json_MSG.put("msgStr", Msgcontents.toString());
-                    scence = executor.execute(constr_share.order_basic_Message + constr_share.tag_basic, json_MSG);
+                    scence = executor.execute(constr_share.order_basic_Message, json_MSG);
                 }
 
                 @Override
