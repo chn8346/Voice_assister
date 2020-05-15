@@ -431,13 +431,9 @@ public class assistant {
                 executor.execute(constr_share.order_basic_open_app+"_basic_function", sub_json);
             }
 
-            // 识别是否是发短信
-            JSONObject json_MSG = check_message(entity_json, word_json);
-                // 确认是短信
-            if(json_MSG.containsKey("is_message"))
-            {
-                executor.execute(constr_share.order_basic_Message + constr_share.tag_basic, json_MSG);
-            }
+            // 识别是否是发短信,如果是就直接发送
+            // （这个由于读写是异步的原因，所以执行和判断放一起）
+            send_message(entity_json, word_json);
 
 
 
@@ -581,16 +577,14 @@ public class assistant {
         return "null";
     }
 
-    private JSONObject check_message(JSONObject entity_json, JSONObject word_json)
+    private void send_message(JSONObject entity_json, JSONObject word_json)
     {
         String listen = listen_.toString();
         final JSONObject json_MSG = new JSONObject();
 
         // 直接检测 todo 测试功能使用，还要改
         if(listen.contains("短信")) {
-            json_MSG.put("is_message", true);
             json_MSG.put("contactor", "我");
-
 
             //speech_speaker.doSpeech("告诉我短信内容");
 
@@ -617,7 +611,8 @@ public class assistant {
 
                 @Override
                 public void onEndOfSpeech() {
-                    json_MSG.put("msgStr", Msgcontents);
+                    json_MSG.put("msgStr", Msgcontents.toString());
+                    scence = executor.execute(constr_share.order_basic_Message + constr_share.tag_basic, json_MSG);
                 }
 
                 @Override
@@ -636,8 +631,6 @@ public class assistant {
                 }
             });
         }
-        return json_MSG;
-
     }
 
 }
