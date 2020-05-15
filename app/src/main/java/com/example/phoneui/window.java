@@ -38,7 +38,7 @@ public class window extends Service {
             button = new Button(getApplicationContext());
             button.setText("Floating Window");
             button.setBackgroundColor(Color.BLUE);
-            button.setBackgroundResource(R.drawable.black_bg);
+            button.setBackgroundResource(R.drawable.bottom_1);
 
             // 设置LayoutParam
             layoutParams = new WindowManager.LayoutParams();
