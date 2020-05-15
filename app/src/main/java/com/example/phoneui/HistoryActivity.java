@@ -261,7 +261,7 @@ public class HistoryActivity extends AppCompatActivity {
                 }
             });
 
-            // TODO 下一版本只在第一次进入可退出盲人模式，其他情况需要进入设置或者语音修改
+
             blind_mode_back_tip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

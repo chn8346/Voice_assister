@@ -42,6 +42,7 @@ public class blind_server extends AccessibilityService{
             button.setText("Floating Window");
             button.setBackgroundColor(Color.BLUE);
 
+            globalstate gl = (globalstate) getApplication();
             // 设置LayoutParam
             layoutParams = new WindowManager.LayoutParams();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -49,11 +50,12 @@ public class blind_server extends AccessibilityService{
             } else {
                 layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
             }
+            layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
             layoutParams.format = PixelFormat.RGBA_8888;
-            layoutParams.width = 500;
-            layoutParams.height = 100;
-            layoutParams.x = 300;
-            layoutParams.y = 300;
+            layoutParams.width = gl.widthSize;
+            layoutParams.height = gl.heightSize;
+            layoutParams.x = 0;
+            layoutParams.y = 0;
 
             // 将悬浮窗控件添加到WindowManager
             windowManager.addView(button, layoutParams);

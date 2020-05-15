@@ -55,7 +55,7 @@ public class window extends Service {
             } else {
                 layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
             }
-            layoutParams.flags = WindowManager.LayoutParams.FLAG_SPLIT_TOUCH;
+            layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
             layoutParams.format = PixelFormat.RGBA_8888;
             layoutParams.width = gl.widthSize;
             layoutParams.height = gl.heightSize;
@@ -63,7 +63,7 @@ public class window extends Service {
             layoutParams.y = 0;
 
             // 将悬浮窗控件添加到WindowManager
-            windowManager.addView(button, layoutParams);
+            //windowManager.addView(button, layoutParams);
 
             Log.d("_ACCESS_Event__", "START SERVICE: BLIND SERVICE START_ED");
         }
