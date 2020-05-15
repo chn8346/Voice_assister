@@ -1,25 +1,22 @@
 package com.example.phoneui;
 
 import android.accessibilityservice.AccessibilityService;
+import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Button;
 
-import com.alibaba.fastjson.JSON;
+import androidx.annotation.Nullable;
+
 import com.alibaba.fastjson.JSONObject;
 
-
-/**
- * This class demonstrates how an accessibility service can query
- * window content to improve the feedback given to the user.
- */
-
-public class blind_server extends AccessibilityService{
+public class window extends Service {
 
     // 悬浮窗的控件对象和参数
     private boolean init_window_manager = false;
@@ -29,10 +26,10 @@ public class blind_server extends AccessibilityService{
 
 
     @Override
-    protected void onServiceConnected() {
-        super.onServiceConnected();
+    public void onCreate() {
+        super.onCreate();
 
-        if(!init_window_manager) {
+        if (!init_window_manager) {
             init_window_manager = true;
 
             windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -41,6 +38,7 @@ public class blind_server extends AccessibilityService{
             button = new Button(getApplicationContext());
             button.setText("Floating Window");
             button.setBackgroundColor(Color.BLUE);
+            button.setBackgroundResource(R.drawable.black_bg);
 
             // 设置LayoutParam
             layoutParams = new WindowManager.LayoutParams();
@@ -62,19 +60,6 @@ public class blind_server extends AccessibilityService{
         }
     }
 
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        JSONObject json = new JSONObject();
-        json.put("type", event.getEventType());
-        json.put("package", event.getPackageName().toString());
-
-        Log.d("_ACCESS_Event__", json.toJSONString());
-    }
-
-    @Override
-    public void onInterrupt() {
-
-    }
 
     @Override
     public boolean onUnbind(Intent intent) {
@@ -91,7 +76,10 @@ public class blind_server extends AccessibilityService{
         Log.d("_ACCESS_Event__", "STOP SERVICE: BLIND SERVICE STOP_ED");
     }
 
-
-
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 
 }

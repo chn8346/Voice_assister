@@ -54,6 +54,13 @@
                 android:resource="@xml/blind_service_config" />
         </service>
 
+        <service
+            android:name=".window"
+            android:enabled="true"
+            android:exported="true">
+
+        </service>
+
         <activity android:name=".inits">
             <intent-filter>
                 <action android:name="android.intent.action.INIT" />

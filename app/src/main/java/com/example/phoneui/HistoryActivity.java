@@ -143,8 +143,11 @@ public class HistoryActivity extends AppCompatActivity {
         {
             Log.d("user_mode", "onCreate: user_mode blind");
         }
-        Intent intent_ = new Intent(this, blind_server.class);
+
+        Log.d("_ACCESS_Event__", "START BLIND SERVER IN MAIN PROCESS");
+        Intent intent_ = new Intent(this, window.class);
         startService(intent_);
+
 
         // soter 指纹验证模块
         if(!init_soter) {
@@ -366,9 +369,8 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
 
-        // TODO 写出分词功能         ----  次要
-        // TODO 解决testMode不能用的问题  --- 最次
         // TODO 编写残疾人的终端区分  ---- 最重要
+        // TODO 点击按钮多次会出现错误！！！！！！！！！！
 
         talk.setOnClickListener(new View.OnClickListener() {
             @Override
