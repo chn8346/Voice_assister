@@ -425,6 +425,8 @@ public class assistant {
             String app_package = app_search(entity_json, word_json);
             if(!app_package.equals("null"))
             {
+                Log.d("___OPEN___APP___", "___OPEN___: " + app_package);
+
                 // 传参执行
                 JSONObject sub_json = new JSONObject();
                 sub_json.put("app_name", app_package);
@@ -526,6 +528,7 @@ public class assistant {
                 {
                     return "null";
                 }
+                Log.d("___OPEN___APP___", package_name);
                 return package_name;
             }
         }

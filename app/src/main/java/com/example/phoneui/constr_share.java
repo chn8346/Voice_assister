@@ -23,11 +23,11 @@ public class constr_share {
         // 特殊情况反馈
     public static final String order_UNKNOWN = "UNKNOWN"; // 未知命令
         //基础命令
-    public static final String order_basic_open_music = "open_music";
-    public static final String order_basic_open_app = "open_app";
-    public static final String order_basic_Message = "msg";
-    public static final String order_basic_search = "search";
-    public static final String order_basic_talk = "talk";
+    public static final String order_basic_open_music = "open_music_basic_function";
+    public static final String order_basic_open_app = "open_app_basic_function";
+    public static final String order_basic_Message = "msg_basic_function";
+    public static final String order_basic_search = "search_basic_function";
+    public static final String order_basic_talk = "talk_basic_function";
         //官方设置
     public static final String order_official_open4G = "open4G";
     public static final String order_basic_call_phone = "call";
@@ -40,11 +40,11 @@ public class constr_share {
 
     // 命令场景
         //基础场景
-    public static final String scene_basic_open_music = "scene_open_music_basic_function";
-    public static final String scene_basic_open_app = "scene_open_app_basic_function";
-    public static final String scene_basic_Message = "scene_msg_basic_function";
-    public static final String scene_basic_search = "scene_search_basic_function";
-    public static final String scene_basic_talk = "scene_talk_basic_function";
+    public static final String scene_basic_open_music = "scene_open_music";
+    public static final String scene_basic_open_app = "scene_open_app";
+    public static final String scene_basic_Message = "scene_msg";
+    public static final String scene_basic_search = "scene_search";
+    public static final String scene_basic_talk = "scene_talk";
         //官方设置场景
     public static final String scene_official_setting = "scene_setting_official";
     public static final String scene_official_call_phone = "scene_call_phone";

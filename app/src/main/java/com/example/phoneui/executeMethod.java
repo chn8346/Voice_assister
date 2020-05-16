@@ -77,7 +77,7 @@ public class executeMethod {
     // 基础的几个命令集成
     private void basic_function(String str)
     {
-        str = str.substring(0, str.indexOf("_basic_function"));
+        //str = str.substring(0, str.indexOf("_basic_function"));
         switch (str)
         {
             case constr_share.order_basic_open_music:

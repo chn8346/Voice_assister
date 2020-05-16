@@ -147,12 +147,16 @@ public class blind_server extends AccessibilityService{
             case AccessibilityEvent.TYPE_ANNOUNCEMENT:
                 Log.d("__EVENT__", "ANNOUNCEMENT" + ser_num);
                 break;
+            case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
+                Log.d("__EVENT__", "WINDOWS_CHANGED" + ser_num);
+                break;
         }
     }
 
     private void check_focus() {
         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
         Log.d("__EVENT__", "check_focus: " + nodeInfo.getPackageName().toString());
+
     }
 
     @Override
