@@ -1,6 +1,7 @@
 package com.example.phoneui;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
@@ -14,6 +15,7 @@ public class package_scaner {
     private List<PackageInfo> app_list;
     private JSONObject quick_info = new com.alibaba.fastjson.JSONObject();
     private JSONObject quick_rank = new JSONObject();
+    private JSONObject quick_rank_back = new JSONObject();
 
     public package_scaner(Context context)
     {
@@ -28,6 +30,7 @@ public class package_scaner {
         app_list = packageManager.getInstalledPackages(0);
 
         quick_rank.clear();
+        quick_rank_back.clear();
         quick_info.clear();
 
         int len = app_list.size();
@@ -37,6 +40,7 @@ public class package_scaner {
             String app_name = packageManager.getApplicationLabel(info.applicationInfo).toString();
             String package_name = info.packageName;
             quick_info.put(app_name, package_name);
+            quick_rank_back.put(package_name, app_name);
             quick_rank.put(package_name, i);
         }
     }
@@ -73,6 +77,15 @@ public class package_scaner {
         if(get_info)
         {
             return app_list.get(quick_rank.getInteger(package_name));
+        }
+        return null;
+    }
+
+    public String find_name(String package_name)
+    {
+        if(get_info)
+        {
+            return quick_rank_back.getString(package_name);
         }
         return null;
     }

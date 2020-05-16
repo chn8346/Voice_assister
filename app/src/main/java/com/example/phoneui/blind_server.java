@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityWindowInfo;
 import android.widget.Button;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -37,11 +39,15 @@ public class blind_server extends AccessibilityService{
     private WindowManager.LayoutParams layoutParams;
     private Button button;
     private StringBuffer info = new StringBuffer();
+    private int ser_num = 0;
+    private int pos_x;
+    private int pos_y;
 
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onServiceConnected() {
+
         if (!init_window_manager) {
             init_window_manager = true;
 
@@ -69,11 +75,11 @@ public class blind_server extends AccessibilityService{
             layoutParams.y = 0;
 
             // 将悬浮窗控件添加到WindowManager
-            windowManager.addView(button, layoutParams);
+            // windowManager.addView(button, layoutParams);
 
             Log.d("_ACCESS_Event__", "START SERVICE: BLIND SERVICE ==== START ====");
 
-            // 触摸感应
+            // 触摸感应位置
             button.setOnTouchListener(new View.OnTouchListener() {
                 @SuppressLint("SetTextI18n")
                 @Override
@@ -84,9 +90,8 @@ public class blind_server extends AccessibilityService{
                     {
                         case MotionEvent.ACTION_DOWN:
                         case MotionEvent.ACTION_MOVE:
-                            int pos_x = (int) event.getRawX();
-                            int pos_y = (int) event.getRawY();
-                            //button.setText("x: " + pos_x + " y: " + pos_y);
+                            pos_x = (int) event.getRawX();
+                            pos_y = (int) event.getRawY();
                     }
 
                     return true;
@@ -98,19 +103,59 @@ public class blind_server extends AccessibilityService{
     @SuppressLint("SetTextI18n")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        int event_type = event.getEventType();
+        ser_num = (ser_num + 1) % 10000;
         if(event == null)
         {
-            button.setText("event__null__");
+            Log.d("_ACCESS_Event__", "event__null__" + ser_num);
         }
         else {
-            button.setText(event.getPackageName().toString());
+            Log.d("_ACCESS_Event__", "on event, ser num:" + ser_num + " , " + event_type);
         }
-        Log.d("_ACCESS_Event__", "on event");
+
+        switch (event_type)
+        {
+            case AccessibilityEvent.TYPE_VIEW_CLICKED:
+                Log.d("__EVENT__", "onAccessibilityEvent: click " + ser_num);
+                check_focus();
+                break;
+            case AccessibilityEvent.TYPE_VIEW_FOCUSED:
+                Log.d("__EVENT__", "onAccessibilityEvent: focus " + ser_num);
+                break;
+            case AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_END:
+                Log.d("__EVENT__", "EXPLORATION_GESTURE_END" + ser_num);
+                break;
+            case AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_START:
+                Log.d("__EVENT__", "EXPLORATION_GESTURE_START" + ser_num);
+                break;
+            case AccessibilityEvent.TYPE_TOUCH_INTERACTION_END:
+                Log.d("__EVENT__", "TOUCH_INTERACTION_END" + ser_num);
+                break;
+            case AccessibilityEvent.TYPE_TOUCH_INTERACTION_START:
+                Log.d("__EVENT__", "TOUCH_INTERACTION_START" + ser_num);
+                break;
+            case AccessibilityEvent.TYPE_VIEW_SCROLLED:
+                Log.d("__EVENT__", "SCROLLED" + ser_num);
+                break;
+            case AccessibilityEvent.TYPE_VIEW_SELECTED:
+                Log.d("__EVENT__", "VIEW_SELECTED" + ser_num);
+                break;
+            case AccessibilityEvent.TYPE_VIEW_HOVER_ENTER:
+                Log.d("__EVENT__", "HOVER_ENTER" + ser_num);
+                break;
+            case AccessibilityEvent.TYPE_ANNOUNCEMENT:
+                Log.d("__EVENT__", "ANNOUNCEMENT" + ser_num);
+                break;
+        }
+    }
+
+    private void check_focus() {
+        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+        Log.d("__EVENT__", "check_focus: " + nodeInfo.getPackageName().toString());
     }
 
     @Override
     public void onInterrupt() {
-
     }
 
     @Override
@@ -126,20 +171,6 @@ public class blind_server extends AccessibilityService{
         windowManager.removeView(button);
 
         Log.d("_ACCESS_Event__", "STOP SERVICE: BLIND SERVICE ==== STOP ====");
-    }
-
-
-    public static boolean isStartAccessibilityService(Context context, String name){
-        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
-        assert am != null;
-        List<AccessibilityServiceInfo> serviceInfos = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
-        for (AccessibilityServiceInfo info : serviceInfos) {
-            String id = info.getId();
-            if (id.contains(name)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }
