@@ -165,16 +165,17 @@ public class HistoryActivity extends AppCompatActivity {
         if (!OpenAccessibilitySettingHelper.isAccessibilitySettingsOn(this,
                 blind_server.class.getName())){// 判断服务是否开启
             Log.d("_ACCESS_Event__", "access_permission: BLIND SERVER NOT IN");
-            OpenAccessibilitySettingHelper.jumpToSettingPage(this);// 跳转到开启页面
+            //OpenAccessibilitySettingHelper.jumpToSettingPage(this);// 跳转到开启页面
         } else {
             Toast.makeText(this, "服务已开启", Toast.LENGTH_SHORT).show();
             Log.d("_ACCESS_Event__", "access_permission: BLIND SERVER IS RUN");
         }
 
-        //Intent intent1 = new Intent(this, blind_server.class);
-        //startService(intent1);
+        Intent intent1 = new Intent(this, blind_server.class);
+        startService(intent1);
 
         Log.d("_ACCESS_Event__", "access_permission: " + isStartAccessibilityService(this, "blind_server"));
+
 
         // soter 指纹验证模块
         if(!init_soter) {

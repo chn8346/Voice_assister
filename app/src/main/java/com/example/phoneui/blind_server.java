@@ -49,7 +49,7 @@ public class blind_server extends AccessibilityService{
 
             // 新建悬浮窗控件
             button = new Button(getApplicationContext());
-            button.setText("Floating Window");
+            button.setText("_MBS_");
             button.setBackgroundColor(Color.BLUE);
             button.setBackgroundResource(R.drawable.bottom_1);
 
@@ -61,17 +61,17 @@ public class blind_server extends AccessibilityService{
             } else {
                 layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
             }
-            //layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+            layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
             layoutParams.format = PixelFormat.RGBA_8888;
-            layoutParams.width = gl.widthSize;
-            layoutParams.height = gl.heightSize;
+            layoutParams.width = (int) (gl.widthSize * 0.3);
+            layoutParams.height = (int) (gl.heightSize * 0.3);
             layoutParams.x = 0;
             layoutParams.y = 0;
 
             // 将悬浮窗控件添加到WindowManager
             windowManager.addView(button, layoutParams);
 
-            Log.d("_ACCESS_Event__", "START SERVICE: BLIND SERVICE START_ED");
+            Log.d("_ACCESS_Event__", "START SERVICE: BLIND SERVICE ==== START ====");
 
             // 触摸感应
             button.setOnTouchListener(new View.OnTouchListener() {
@@ -86,7 +86,7 @@ public class blind_server extends AccessibilityService{
                         case MotionEvent.ACTION_MOVE:
                             int pos_x = (int) event.getRawX();
                             int pos_y = (int) event.getRawY();
-                            info.append("x: ").append(pos_x).append(" y: ").append(pos_y);
+                            //button.setText("x: " + pos_x + " y: " + pos_y);
                     }
 
                     return true;
@@ -97,14 +97,8 @@ public class blind_server extends AccessibilityService{
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        JSONObject json = new JSONObject();
-        json.put("type", event.getEventType());
-        json.put("package", event.getPackageName().toString());
-
-        info.append(event.toString());
-        button.setText(info.toString());
-
-        Log.d("_ACCESS_Event__", json.toJSONString());
+        button.setText(event.getBeforeText().toString());
+        Log.d("_ACCESS_Event__", "on event");
     }
 
     @Override
@@ -124,7 +118,7 @@ public class blind_server extends AccessibilityService{
         init_window_manager = false;
         windowManager.removeView(button);
 
-        Log.d("_ACCESS_Event__", "STOP SERVICE: BLIND SERVICE STOP_ED");
+        Log.d("_ACCESS_Event__", "STOP SERVICE: BLIND SERVICE ==== STOP ====");
     }
 
 

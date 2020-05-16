@@ -44,6 +44,7 @@
             android:name=".blind_server"
             android:enabled="true"
             android:exported="true"
+            android:description="@string/BMS_description"
             android:label="@string/accessibility_service_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
