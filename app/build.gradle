@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.huawei.agconnect'
 
 android {
+    signingConfigs {
+        debug {
+            storePassword '292115'
+            keyPassword '292115'
+            storeFile file('E:\\L3__Battle\\largePro\\apkkey\\va.jks')
+            keyAlias = 'key0'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {

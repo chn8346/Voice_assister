@@ -65,7 +65,7 @@ public class window extends Service {
             // 将悬浮窗控件添加到WindowManager
             //windowManager.addView(button, layoutParams);
 
-            Log.d("_ACCESS_Event__", "START SERVICE: BLIND SERVICE START_ED");
+            Log.d("_ACCESS_Event__", "START SERVICE: WINDOW SERVICE START_ED");
         }
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +75,12 @@ public class window extends Service {
                 button.setText(msg.toString());
             }
         });
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("_ACCESS_Event__", "onStartCommand executed");
+        return super.onStartCommand(intent, flags, startId);
     }
 
 
@@ -90,7 +96,7 @@ public class window extends Service {
         init_window_manager = false;
         windowManager.removeView(button);
 
-        Log.d("_ACCESS_Event__", "STOP SERVICE: BLIND SERVICE STOP_ED");
+        Log.d("_ACCESS_Event__", "STOP SERVICE: WINDOW SERVICE STOP_ED");
     }
 
     @Nullable

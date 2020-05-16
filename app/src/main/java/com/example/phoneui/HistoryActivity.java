@@ -1,10 +1,14 @@
 package com.example.phoneui;
 
+import android.Manifest;
+import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +19,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -24,6 +30,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.iflytek.cloud.SpeechUtility;
 
@@ -138,16 +145,34 @@ public class HistoryActivity extends AppCompatActivity {
             initView(gl.user_mode);
         }
 
+        /*
         // 盲人模式下打开盲人无障碍服务
         if(gl.user_mode.equals(constr_share.k_user_mode_Blind))
         {
             Log.d("user_mode", "onCreate: user_mode blind");
         }
-
+        // Log.d("_ACCESS_Event__", Manifest.permission.BIND_ACCESSIBILITY_SERVICE);
         Log.d("_ACCESS_Event__", "START BLIND SERVER IN MAIN PROCESS");
+        Intent intent_ = new Intent(this, blind_server.class);
+        startService(intent_);
+        */
+
         Intent intent_ = new Intent(this, window.class);
         startService(intent_);
 
+        if (!OpenAccessibilitySettingHelper.isAccessibilitySettingsOn(this,
+                blind_server.class.getName())){// 判断服务是否开启
+            Log.d("_ACCESS_Event__", "access_permission: BLIND SERVER NOT IN");
+            OpenAccessibilitySettingHelper.jumpToSettingPage(this);// 跳转到开启页面
+        } else {
+            Toast.makeText(this, "服务已开启", Toast.LENGTH_SHORT).show();
+            Log.d("_ACCESS_Event__", "access_permission: BLIND SERVER IS RUN");
+        }
+
+        Intent intent1 = new Intent(this, blind_server.class);
+        startService(intent1);
+
+        Log.d("_ACCESS_Event__", "access_permission: " + isStartAccessibilityService(this, "blind_server"));
 
         // soter 指纹验证模块
         if(!init_soter) {
@@ -477,6 +502,22 @@ public class HistoryActivity extends AppCompatActivity {
         if(!gl.user_mode.equals(constr_share.k_user_mode_Blind)) {
             startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName())));
         }
+    }
+
+    public boolean isStartAccessibilityService(Context context, String name){
+        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        assert am != null;
+        List<AccessibilityServiceInfo> serviceInfos = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+        serviceInfos = am.getInstalledAccessibilityServiceList();
+
+        for (AccessibilityServiceInfo info : serviceInfos) {
+            String id = info.getId();
+            Log.d("_ACCESS_Event__", "access_id: " + id);
+            if (id.contains(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

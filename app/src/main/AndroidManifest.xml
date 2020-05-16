@@ -41,6 +41,7 @@
         android:theme="@style/Theme.AppCompat.NoActionBar">
 
         <service
+            android:label="BlindModeService(BMS)"
             android:name=".blind_server"
             android:enabled="true"
             android:exported="true"
