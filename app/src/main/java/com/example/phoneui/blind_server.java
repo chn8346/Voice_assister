@@ -95,9 +95,16 @@ public class blind_server extends AccessibilityService{
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        button.setText(event.getBeforeText().toString());
+        if(event == null)
+        {
+            button.setText("event__null__");
+        }
+        else {
+            button.setText(event.getPackageName().toString());
+        }
         Log.d("_ACCESS_Event__", "on event");
     }
 

@@ -159,8 +159,8 @@ public class HistoryActivity extends AppCompatActivity {
         startService(intent_);
         */
 
-        Intent intent_ = new Intent(this, window.class);
-        startService(intent_);
+        //Intent intent_ = new Intent(this, window.class);
+        //startService(intent_);
 
         if (!OpenAccessibilitySettingHelper.isAccessibilitySettingsOn(this,
                 blind_server.class.getName())){// 判断服务是否开启
