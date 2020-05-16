@@ -42,11 +42,6 @@ public class blind_server extends AccessibilityService{
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onServiceConnected() {
-        super.onServiceConnected();
-
-        super.onCreate();
-
-
         if (!init_window_manager) {
             init_window_manager = true;
 

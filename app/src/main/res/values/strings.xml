@@ -17,4 +17,5 @@
     <string name="task_complete">task_complete</string>
     <string name="task_not_complete">task_not_complete</string>
     <string name="task_complete_template">task_complete_template</string>
+    <string name="accessibility_service_name">MBS</string>
 </resources>

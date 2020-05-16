@@ -29,11 +29,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.accessibilityservice.AccessibilityServiceInfoCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.iflytek.cloud.SpeechUtility;
 
+import java.security.AccessController;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -169,8 +171,8 @@ public class HistoryActivity extends AppCompatActivity {
             Log.d("_ACCESS_Event__", "access_permission: BLIND SERVER IS RUN");
         }
 
-        Intent intent1 = new Intent(this, blind_server.class);
-        startService(intent1);
+        //Intent intent1 = new Intent(this, blind_server.class);
+        //startService(intent1);
 
         Log.d("_ACCESS_Event__", "access_permission: " + isStartAccessibilityService(this, "blind_server"));
 
