@@ -33,35 +33,50 @@ import com.alibaba.fastjson.*;
 public class assistant {
     //全局变量
     private globalstate gl;
+
     //上下文
     private Context context_;
+
     //封装的toast
     private Toast_ toast = new Toast_();
+
     //语音识别类
     private SpeechRecognizer mIat;
+
     //判断初始化状态的数值
     private int state = 0;
+
     //测试模式
     private boolean testMode = false;
-    private boolean ivw_off = true;
+    private boolean ivw_off = false;
+
     //听到的结果
     private StringBuffer listen_ = new StringBuffer();
+
     //对听到的结果的分类
     private String cls_str = "";
+
     //文字转语音类
     private speaker speech_speaker;
+
     //监听命令类
     private VoiceWakeuper mIvw = null;
+
     //所有谈话都存在这里面
     private StringBuffer talkList = new StringBuffer();
+
     //显示谈话的文本框
     private TextView view_;
+
     //文字转换的可信度
     private int confidence = -1;
+
     //命令执行器
     private executeMethod executor;
+
     //目前的场景
     private String scence;
+
     //命令的附加信息
     private JSONObject addition_json;
 
@@ -313,6 +328,7 @@ public class assistant {
 
                 //scence = executor.execute(cls_str, addition_json);
 
+                gl.talk_button_pressed = false;
 
                 // 使得ivw（语音唤醒）恢复
                 if(!ivw_off) {
@@ -345,6 +361,8 @@ public class assistant {
 
                         // 对命令进行分类
                         cls_str = classify(listen_.toString());
+
+                        gl.talk_button_pressed = false;
                     }
                 }
                 else

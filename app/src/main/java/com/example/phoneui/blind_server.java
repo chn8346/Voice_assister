@@ -55,12 +55,15 @@ public class blind_server extends AccessibilityService{
 
         globalstate gl = (globalstate) getApplication();
         if(!gl.user_mode.equals(constr_share.k_user_mode_Blind)) {
-            disableSelf();
             Log.d("_ACCESS_Event__", "STOP : NOT BLIND SERVICE ==== SELF STOP ====");
+            disableSelf();
         }
         if (!init_window_manager) {
             init_window_manager = true;
 
+            // 目前发现好像用不到悬浮窗，暂时注释代码
+
+            /*
             windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
             // 新建悬浮窗控件
@@ -105,7 +108,7 @@ public class blind_server extends AccessibilityService{
 
                     return true;
                 }
-            });
+            });*/
         }
     }
 
