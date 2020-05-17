@@ -173,7 +173,7 @@ public class blind_server extends AccessibilityService{
         super.onDestroy();
 
         init_window_manager = false;
-        windowManager.removeView(button);
+        //windowManager.removeView(button);
 
         Log.d("_ACCESS_Event__", "STOP SERVICE: BLIND SERVICE ==== STOP ====");
     }

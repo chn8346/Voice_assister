@@ -1,6 +1,7 @@
 package com.example.phoneui;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.JsonToken;
@@ -9,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
+import com.huawei.hms.framework.common.StringUtils;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.RecognizerListener;
 import com.iflytek.cloud.RecognizerResult;
@@ -356,99 +358,109 @@ public class assistant {
 
         // TODO 两种命令识别方式分着用
 
-        // 集成的华为命令类指令   --- >
-        String texts = "{text:'" + words + "'";
-        String category = ",category:'systemSetting,trip,contact'";
-        String module = "}";
-        String Json = texts + category + module;
+        // 华为NLU只能华为用，其他的用讯飞接口
+        if(android.os.Build.BRAND.equals("HUAWEI") || android.os.Build.BRAND.equals("HONOR")) {
 
-        ResponseResult respResult = NLUAPIService.getInstance().getAssistantIntention(Json, NLUConstants.REQUEST_TYPE_LOCAL);
+            // 集成的华为命令类指令   --- >
+            String texts = "{text:'" + words + "'";
+            String category = ",category:'systemSetting,trip,contact'";
+            String module = "}";
+            String Json = texts + category + module;
 
-        Log.d("______CLASSIFY_________", "___JSON___: " + respResult.getJsonRes());
-        Log.d("______CLASSIFY_________", "___CODE___: " + respResult.getCode());
-        Log.d("______CLASSIFY_________", "___MSG___: " + respResult.getMessage());
+            ResponseResult respResult = NLUAPIService.getInstance().getAssistantIntention(Json, NLUConstants.REQUEST_TYPE_LOCAL);
 
-        String msg = respResult.getJsonRes();
+            Log.d("______CLASSIFY_________", "___BRAND___: " + android.os.Build.BRAND);
+            Log.d("______CLASSIFY_________", "___JSON___: " + respResult.getJsonRes());
+            Log.d("______CLASSIFY_________", "___CODE___: " + respResult.getCode());
+            Log.d("______CLASSIFY_________", "___MSG___: " + respResult.getMessage());
 
-        JSONObject jsonObject = new JSONObject();
+            String msg = respResult.getJsonRes();
 
-        // 如果这一步已经识别到了情景和命令，那就不用做后面的任务了，完成这一步处理就好
-        if(msg.contains("intentions"))
-        {
-            jsonObject = JSON.parseObject(msg);
-            JSONArray jsonArray = jsonObject.getJSONArray("intentions");
-            jsonObject = jsonArray.getJSONObject(0);
-            String name = jsonObject.getString("name");
-            int confidence = jsonObject.getInteger("confidence");
+            JSONObject jsonObject = new JSONObject();
 
-            // 获取额外信息
-            try {
-                addition_json = jsonObject.getJSONArray("attributes").getJSONObject(0);
-            } catch (Exception e) {
-                addition_json = null;
-                e.printStackTrace();
-            }
+            // 如果这一步已经识别到了情景和命令，那就不用做后面的任务了，完成这一步处理就好
+            if (msg.contains("intentions")) {
+                jsonObject = JSON.parseObject(msg);
+                JSONArray jsonArray = jsonObject.getJSONArray("intentions");
+                jsonObject = jsonArray.getJSONObject(0);
+                String name = jsonObject.getString("name");
+                int confidence = jsonObject.getInteger("confidence");
 
-            Log.d("______CLASSIFY_________", "___JSON_ANA___: " + name + " --> CONF: " + confidence);
-            this.confidence = confidence;
-            return "intentions_" + name;
-        }
-        else {
+                // 获取额外信息
+                if (jsonObject.containsKey("attributes")) {
+                    addition_json = jsonObject.getJSONArray("attributes").getJSONObject(0);
+                } else {
+                    addition_json = null;
+                }
 
-            // NLP 分词 --> 目前好像用不到
+                Log.d("______CLASSIFY_________", "___JSON_ANA___: " + name + " --> CONF: " + confidence);
+                this.confidence = confidence;
+                //return "intentions_" + name;
+
+                executor.execute("intentions_" + name, addition_json);
+            } else {
+
+                // NLP 分词 --> 目前好像用不到
             /*
             Json = "{text:'"+words+"',type:1}";
             respResult = NLUAPIService.getInstance().getWordSegment(Json, NLUConstants.REQUEST_TYPE_LOCAL);
 
             Log.d("______CLASSIFY_________", "___SEG___: " + respResult.getJsonRes());
             */
-            // 词性分析
-            Json = "{text:'" + words + "',type:1}"; // TODO 调节细粒度  9223372036854775807
-            respResult = NLUAPIService.getInstance().getWordPos(Json, NLUConstants.REQUEST_TYPE_LOCAL);
+                // 词性分析
+                Json = "{text:'" + words + "',type:1}"; // TODO 调节细粒度  9223372036854775807
+                respResult = NLUAPIService.getInstance().getWordPos(Json, NLUConstants.REQUEST_TYPE_LOCAL);
 
-            Log.d("______CLASSIFY_________", "___WORD___: " + respResult.getJsonRes());
-            // 词性分析结果
-            String WordPos = respResult.getJsonRes();
-            JSONObject word_json = JSON.parseObject(WordPos);
-
-
-            // 实体分析
-            Json = Json = "{text:'" + words + "'}";
-            respResult = NLUAPIService.getInstance().getEntity(Json, NLUConstants.REQUEST_TYPE_LOCAL);
-
-            Log.d("______CLASSIFY_________", "___MAIN___: " + respResult.getJsonRes());
-            // 实体分析结果
-            String Entity_ana = respResult.getJsonRes();
-            JSONObject entity_json = JSON.parseObject(Entity_ana);
-
-            // 识别是否是打开APP的命令
-            String app_package = app_search(entity_json, word_json);
-            if(!app_package.equals("null"))
-            {
-                Log.d("___OPEN___APP___", "___OPEN___: " + app_package);
-
-                // 传参执行
-                JSONObject sub_json = new JSONObject();
-                sub_json.put("app_name", app_package);
-                executor.execute(constr_share.order_basic_open_app, sub_json);
-            }
-
-            // 识别是否是发短信,如果是就直接发送
-            // （这个由于读写是异步的原因，所以执行和判断放一起）
-            send_message(entity_json, word_json);
+                Log.d("______CLASSIFY_________", "___WORD___: " + respResult.getJsonRes());
+                // 词性分析结果
+                String WordPos = respResult.getJsonRes();
+                JSONObject word_json = JSON.parseObject(WordPos);
 
 
-            // 识别是否是是搜索命令
-            String content = search_order(entity_json, word_json,listen_.toString());
-            if(!content.equals("null")) {
-                Log.d("_CLASSIFY_SEARCH_", "content: " + content);
+                // 实体分析
+                Json = Json = "{text:'" + words + "'}";
+                respResult = NLUAPIService.getInstance().getEntity(Json, NLUConstants.REQUEST_TYPE_LOCAL);
 
-                JSONObject json_search = new JSONObject();
-                json_search.put("search_content", content);
+                Log.d("______CLASSIFY_________", "___MAIN___: " + respResult.getJsonRes());
+                // 实体分析结果
+                String Entity_ana = respResult.getJsonRes();
+                JSONObject entity_json = JSON.parseObject(Entity_ana);
 
-                executor.execute(constr_share.order_basic_search, json_search);
+                // 识别是否是打开APP的命令
+                String app_package = app_search(entity_json, word_json);
+                if (!app_package.equals("null")) {
+                    Log.d("___OPEN___APP___", "___OPEN___: " + app_package);
+
+                    // 传参执行
+                    JSONObject sub_json = new JSONObject();
+                    sub_json.put("app_name", app_package);
+                    executor.execute(constr_share.order_basic_open_app, sub_json);
+                }
+
+                // 识别是否是发短信,如果是就直接发送
+                // （这个由于读写是异步的原因，所以执行和判断放一起）
+                send_message(entity_json, word_json);
+
+
+                // 识别是否是是搜索命令
+                String content = search_order(entity_json, word_json, listen_.toString());
+                if (!content.equals("null")) {
+                    Log.d("_CLASSIFY_SEARCH_", "content: " + content);
+
+                    JSONObject json_search = new JSONObject();
+                    json_search.put("search_content", content);
+
+                    executor.execute(constr_share.order_basic_search, json_search);
+                }
             }
         }
+        // 如果不是华为->用讯飞源头
+        else
+        {
+
+        }
+
+
         return "default";
     }
 
@@ -509,6 +521,15 @@ public class assistant {
 
         }
     };
+
+    // 急停语音 todo 急停可能会有问题，先测试再改
+    private void stopListener()
+    {
+        if(mIat.isListening())
+        {
+            mIat.stopListening();
+        }
+    }
 
     private String app_search(JSONObject entity_json, JSONObject word_json)
     {

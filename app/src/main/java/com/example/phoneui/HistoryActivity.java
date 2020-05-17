@@ -341,7 +341,7 @@ public class HistoryActivity extends AppCompatActivity {
             }
         }, 7000);*/
 
-        speech_speaker.doSpeech("我是复读机,嘤嘤嘤");
+        //speech_speaker.doSpeech("我是复读机,嘤嘤嘤");
 
         //控件点按设置
 
@@ -414,12 +414,20 @@ public class HistoryActivity extends AppCompatActivity {
                 //toast.show(HistoryActivity.this, "未开放的功能", 1000);
                 //finish();
 
-                ass.init_listener();
-                //toast.show(HistoryActivity.this, "请说出你的命令", toast.short_time_len);
+                if(gl.talk_button_pressed)
+                {
+                    gl.talk_button_pressed = false;
 
-                // 执行接口
-                ass.listen_result();
+                }
+                else {
+                    gl.talk_button_pressed = true;
 
+                    ass.init_listener();
+                    //toast.show(HistoryActivity.this, "请说出你的命令", toast.short_time_len);
+
+                    // 执行接口
+                    ass.listen_result();
+                }
                 //toast.show(HistoryActivity.this, band.download_result(), 1000);
             }
         });
