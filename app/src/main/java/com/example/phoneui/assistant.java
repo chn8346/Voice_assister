@@ -282,7 +282,6 @@ public class assistant {
     // 开始听写，获取音频和文字、分类
     public void listen_result()
     {
-
         if(state < 11) {
             toast.show(context_, "初始化错误", toast.short_time_len);
             return;
@@ -313,33 +312,44 @@ public class assistant {
                     toast.show(context_, "录音结束", 300);
                 }
 
+                //讯飞api的执行顺序：
+                // on_result -> on_end_of_speech -> on_result
+                //
+                // 所以
+                // 这里面gl.talk_button_pressed 标志置false就行
+
+
                 // 修改主界面的文字，将TextView变成对话框
-                load_talk(listen_.toString(), view_);
+                //load_talk(listen_.toString(), view_);
 
                 // 读出回应（测试模式下为读出使用者的命令）
-                // TODO 加上非测试的输出
-                speech_speaker.doSpeech(listen_.toString());
+                //speech_speaker.doSpeech(listen_.toString());
 
                 // 对命令进行分类
-                cls_str = classify(listen_.toString());
+                //cls_str = classify(listen_.toString());
 
                 // TODO 会返回场景，记得承接
                 // 执行命令,scene获取返回的当前场景
 
                 //scence = executor.execute(cls_str, addition_json);
 
-                gl.talk_button_pressed = false;
-
                 // 使得ivw（语音唤醒）恢复
                 if(!ivw_off) {
                     mIvw.startListening(mWakeuperListener);
                 }
+
+                gl.talk_button_pressed = false;
+
+                Log.d("I_FLY", "onEndOfSpeech: ");
             }
 
             @Override
             public void onResult(RecognizerResult recognizerResult, boolean b) {
+
+
                 if(recognizerResult != null)
                 {
+                    Log.d("I_FLY", "onResult");
                     if(b)
                     {
                         listen_.append(recognizerResult.getResultString());
@@ -348,6 +358,7 @@ public class assistant {
                     {
                         listen_.append(recognizerResult.getResultString());
                     }
+
 
                     // 抬起了talk键自动执行
                     if(!gl.talk_button_pressed)
@@ -362,7 +373,6 @@ public class assistant {
                         // 对命令进行分类
                         cls_str = classify(listen_.toString());
 
-                        gl.talk_button_pressed = false;
                     }
                 }
                 else
@@ -389,6 +399,9 @@ public class assistant {
     // 对命令进行分类
     private String classify(String words)
     {
+        // 特殊的命令式语音交互
+        special_operate(words);
+
         Log.d("______CLASSIFY_________", "___WORD___: " + words);
 
         // TODO 两种命令识别方式分着用
@@ -536,6 +549,10 @@ public class assistant {
                 if(!ivw_off) {
                     mIvw.stopListening();
                 }
+
+                // 按钮被按下
+                gl.talk_button_pressed = true;
+
                 assistant_listen();
             }
 
@@ -691,4 +708,18 @@ public class assistant {
         }
     }
 
+
+    private void special_operate(String str)
+    {
+        if(str.contains("我不是盲人") || str.contains("关闭盲人模式"))
+        {
+            gl.user_mode = constr_share.k_user_mode_normal;
+            gl.user_mode_changed = true;
+            view_.setText("盲人模式.");
+        }
+        else
+        {
+
+        }
+    }
 }

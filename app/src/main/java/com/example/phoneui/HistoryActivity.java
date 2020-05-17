@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +58,7 @@ public class HistoryActivity extends AppCompatActivity {
     private VideoPlay vp;
 
     private boolean init_soter = false;
+    private file_writer file_edit;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -84,6 +87,7 @@ public class HistoryActivity extends AppCompatActivity {
         // 全局变量初始化
         final globalstate gl = (globalstate)this.getApplication();
         final file_writer file_edit = new file_writer(this);
+        this.file_edit = file_edit;
         speaker speech_speaker = new speaker(this);
         SpeechUtility su = SpeechUtility.getUtility();
         final Toast_ toast = new Toast_();
@@ -215,6 +219,15 @@ public class HistoryActivity extends AppCompatActivity {
          *
          * */
 
+        Button blind_mode_back_tip = (Button) findViewById(R.id.blind_quit);
+        final Button talk = (Button) findViewById(R.id.groundtalk);
+        Button set = (Button) findViewById(R.id.bottom_1);
+        Button back_ground_button = (Button) findViewById(R.id.main_background);
+        ImageView imag = (ImageView) findViewById(R.id.set_icon);
+
+        flash_ui();
+
+        /*
         //dynamic adjust
         //控件大小位置调整
         DisplayMetrics display = new DisplayMetrics();
@@ -318,7 +331,7 @@ public class HistoryActivity extends AppCompatActivity {
         {
             blind_mode_back_tip.setVisibility(View.GONE);
         }
-
+        */
 
         // log 输出应用信息
         /*
@@ -454,6 +467,27 @@ public class HistoryActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        hello.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(gl.user_mode_changed)
+                {
+                    gl.user_mode_changed = false;
+                    flash_ui();
+                }
+            }
+        });
     }
 
     /*
@@ -545,4 +579,124 @@ public class HistoryActivity extends AppCompatActivity {
         return false;
     }
 
+    public void flash_ui()
+    {
+        final globalstate gl = (globalstate) this.getApplication();
+
+        // 动态背景只在非盲人模式开启
+        if(file_edit.read(constr_share.user_mode, "null_").equals(constr_share.k_user_mode_Blind))
+        {
+            initView(gl.user_mode);
+        }
+        else {
+            initView(gl.user_mode);
+        }
+
+        gl.update_global_state(this.file_edit);
+
+        //dynamic adjust
+        //控件大小位置调整
+        DisplayMetrics display = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(display);
+        float scaledDensity = display.scaledDensity;
+        gl.widthSize = display.widthPixels;
+        gl.heightSize = display.heightPixels;
+
+        Button blind_mode_back_tip = (Button) findViewById(R.id.blind_quit);
+        final Button talk = (Button) findViewById(R.id.groundtalk);
+        Button set = (Button) findViewById(R.id.bottom_1);
+        Button back_ground_button = (Button) findViewById(R.id.main_background);
+        ImageView imag = (ImageView) findViewById(R.id.set_icon);
+
+
+        // pos adjust
+
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) talk.getLayoutParams();
+        if(layoutParams != null)
+        {
+            float bu_pro = (float) 0.15;
+
+            layoutParams.width = (int) (gl.heightSize * bu_pro);
+            layoutParams.height = (int) (gl.heightSize * bu_pro);
+            layoutParams.topMargin = gl.heightSize/2 + layoutParams.height/2;
+            layoutParams.leftMargin = (gl.widthSize - layoutParams.width)/2;
+        }
+
+        layoutParams = (RelativeLayout.LayoutParams) set.getLayoutParams();
+        float high_pro_bu = (float) 0.12;
+        if(layoutParams != null)
+        {
+
+            layoutParams.topMargin = (int) (gl.heightSize * (1 - high_pro_bu));
+            layoutParams.height = (int) (gl.heightSize * high_pro_bu);
+            layoutParams.width = (int) (gl.heightSize);
+
+        }
+
+        layoutParams = (RelativeLayout.LayoutParams) imag.getLayoutParams();
+        if(layoutParams != null)
+        {
+            float high_pro = (float) 0.06;
+            layoutParams.height = (int) (gl.heightSize * high_pro);
+            layoutParams.width = (int) (gl.heightSize * high_pro);
+            layoutParams.leftMargin = (gl.widthSize - layoutParams.width)/2;
+            layoutParams.topMargin = (int) (gl.heightSize*(1 - high_pro * 2 + 0.01));
+            //layoutParams.topMargin = (int) (gl.heightSize * (0.5));
+        }
+
+        layoutParams = (RelativeLayout.LayoutParams) imag.getLayoutParams();
+        if(layoutParams != null)
+        {
+            float high_pro = (float) 0.06;
+            layoutParams.height = (int) (gl.heightSize * high_pro);
+            layoutParams.width = (int) (gl.heightSize * high_pro);
+            layoutParams.leftMargin = (gl.widthSize - layoutParams.width)/2;
+            layoutParams.topMargin = (int) (gl.heightSize*(1 - high_pro * 2 + 0.01));
+            //layoutParams.topMargin = (int) (gl.heightSize * (0.5));
+        }
+
+        TextView hello = (TextView) findViewById(R.id.Hello);
+        layoutParams = (RelativeLayout.LayoutParams) hello.getLayoutParams();
+        if(layoutParams != null)
+        {
+            float high_pro = (float) 0.12;
+            //layoutParams.height = (int) (gl.heightSize * high_pro);
+            //layoutParams.width = (int) (gl.heightSize * high_pro);
+            //layoutParams.leftMargin = (gl.widthSize - layoutParams.width)/2;
+            layoutParams.topMargin = (int) (gl.heightSize*0.2);
+            //layoutParams.topMargin = (int) (gl.heightSize * (0.5));
+        }
+
+        //toast.show(this, gl.user_mode, 1000);
+        // 盲人模式设置
+        if(gl.user_mode.equals(constr_share.k_user_mode_Blind))
+        {
+            //toast.show(this, "blind mode", 1000);
+            set.setVisibility(View.GONE);
+            talk.setVisibility(View.GONE);
+            hello.setText("盲人模式");
+            imag.setVisibility(View.GONE);
+            back_ground_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    talk.callOnClick();
+                }
+            });
+
+
+            blind_mode_back_tip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO 下一版本添加 “记录上次的用户模式” 功能
+                    gl.user_mode = constr_share.k_user_mode_normal;
+                    file_edit.write(constr_share.user_mode, constr_share.k_user_mode_normal);
+                    restart();
+                }
+            });
+        }
+        else
+        {
+            blind_mode_back_tip.setVisibility(View.GONE);
+        }
+    }
 }

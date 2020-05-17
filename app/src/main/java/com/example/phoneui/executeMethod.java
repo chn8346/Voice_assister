@@ -2,6 +2,8 @@ package com.example.phoneui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.Instrumentation;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -19,8 +21,11 @@ import androidx.core.content.ContextCompat;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.ACTIVITY_SERVICE;
 
 public class executeMethod {
     private StringBuffer buffer;
@@ -259,11 +264,16 @@ public class executeMethod {
                 String app_name = parament.getString("app_name");
                 // String package_name = quick_appinfo.getString(app_name);
                 Log.d("___OPEN___APP___", "openAPP: " + app_name);
+                ActivityManager activityManager = (ActivityManager) context_.getSystemService(ACTIVITY_SERVICE);
                 Intent intent = context_.getPackageManager().getLaunchIntentForPackage(app_name);
                 if (intent != null) {
                     //intent.putExtra("type", "110");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context_.startActivity(intent);
+                }
+                else
+                {
+                    Log.d("___OPEN___APP___", "openAPP: fail null intent");
                 }
             }
         }

@@ -5,6 +5,8 @@ import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -46,6 +48,9 @@ public class blind_server extends AccessibilityService{
     private int ser_num = 0;
     private int pos_x;
     private int pos_y;
+    private globalstate gl;
+
+    private StringBuffer notify_text;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -53,13 +58,16 @@ public class blind_server extends AccessibilityService{
     @Override
     protected void onServiceConnected() {
 
-        globalstate gl = (globalstate) getApplication();
+        gl = (globalstate) getApplication();
         if(!gl.user_mode.equals(constr_share.k_user_mode_Blind)) {
             Log.d("_ACCESS_Event__", "STOP : NOT BLIND SERVICE ==== SELF STOP ====");
             disableSelf();
         }
         if (!init_window_manager) {
+
             init_window_manager = true;
+
+            notify_text = new StringBuffer();
 
             // 目前发现好像用不到悬浮窗，暂时注释代码
 
@@ -112,9 +120,15 @@ public class blind_server extends AccessibilityService{
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("SetTextI18n")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        if(!gl.user_mode.equals(constr_share.k_user_mode_Blind))
+        {
+            disableSelf();
+        }
+
         int event_type = event.getEventType();
         ser_num = (ser_num + 1) % 10000;
         if(event == null)
@@ -125,48 +139,95 @@ public class blind_server extends AccessibilityService{
             Log.d("_ACCESS_Event__", "on event, ser num:" + ser_num + " , " + event_type);
         }
 
+        String package_name = (String) event.getPackageName();
+        if(package_name != null)
+        {
+            Log.d("_ACCESS_Event__", "package_name : " + package_name );
+        }
+
         switch (event_type)
         {
             case AccessibilityEvent.TYPE_VIEW_CLICKED:
-                Log.d("__EVENT__", "onAccessibilityEvent: click " + ser_num);
-                check_focus();
+                Log.d("_AC_EVENT__", "onAccessibilityEvent: click " + ser_num);
+                process_click(event);
                 break;
             case AccessibilityEvent.TYPE_VIEW_FOCUSED:
-                Log.d("__EVENT__", "onAccessibilityEvent: focus " + ser_num);
+                Log.d("_AC_EVENT__", "onAccessibilityEvent: focus " + ser_num);
+                process_focus(event);
                 break;
             case AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_END:
-                Log.d("__EVENT__", "EXPLORATION_GESTURE_END" + ser_num);
-                break;
-            case AccessibilityEvent.TYPE_TOUCH_EXPLORATION_GESTURE_START:
-                Log.d("__EVENT__", "EXPLORATION_GESTURE_START" + ser_num);
-                break;
-            case AccessibilityEvent.TYPE_TOUCH_INTERACTION_END:
-                Log.d("__EVENT__", "TOUCH_INTERACTION_END" + ser_num);
-                break;
-            case AccessibilityEvent.TYPE_TOUCH_INTERACTION_START:
-                Log.d("__EVENT__", "TOUCH_INTERACTION_START" + ser_num);
-                break;
-            case AccessibilityEvent.TYPE_VIEW_SCROLLED:
-                Log.d("__EVENT__", "SCROLLED" + ser_num);
-                break;
-            case AccessibilityEvent.TYPE_VIEW_SELECTED:
-                Log.d("__EVENT__", "VIEW_SELECTED" + ser_num);
+                Log.d("_AC_EVENT__", "EXPLORATION_GESTURE_END" + ser_num);
+                process_gesture(event);
                 break;
             case AccessibilityEvent.TYPE_VIEW_HOVER_ENTER:
-                Log.d("__EVENT__", "HOVER_ENTER" + ser_num);
+                Log.d("_AC_EVENT__", "HOVER_ENTER" + ser_num);
+                process_hove_enter(event);
                 break;
-            case AccessibilityEvent.TYPE_ANNOUNCEMENT:
-                Log.d("__EVENT__", "ANNOUNCEMENT" + ser_num);
+            case AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED:
+                Log.d("_AC_EVENT__", "ANNOUNCEMENT" + ser_num);
+                process_announcement(event);
                 break;
             case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
-                Log.d("__EVENT__", "WINDOWS_CHANGED" + ser_num);
+                Log.d("_AC_EVENT__", "WINDOWS_CHANGED" + ser_num);
+                process_window_change(event);
                 break;
         }
     }
 
+
+    // 检查聚焦点
     private void check_focus() {
         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
         Log.d("__EVENT__", "check_focus: " + nodeInfo.getPackageName().toString());
+
+    }
+
+    // 点击事件的处理
+    private void process_click(AccessibilityEvent event)
+    {
+
+    }
+
+    // 聚焦事件的处理
+    private void process_focus(AccessibilityEvent event)
+    {
+        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+    }
+
+    // 手势事件的处理
+    private void process_gesture(AccessibilityEvent event)
+    {
+
+    }
+
+    // 指针选定的事件处理
+    private void process_hove_enter(AccessibilityEvent event)
+    {
+
+    }
+
+    // 通知的事件处理
+    private void process_announcement(AccessibilityEvent event)
+    {
+        // 获取应用名称
+        String app = (String) event.getPackageName();
+        // 暂时读到log里面
+        for (CharSequence text : event.getText()) {
+            String t = text.toString();
+            // 不包含之前信息的情况下再次读取
+            if(!notify_text.toString().contains(t)) {
+                Log.d("EVE__NOTIFY", "__" + t);
+                notify_text.append(t);
+                // todo 读出消息
+
+            }
+        }
+    }
+
+    // 更换界面的事件处理
+    private void process_window_change(AccessibilityEvent event)
+    {
+        // todo 提示界面更换
 
     }
 

@@ -24,6 +24,7 @@ public class speaker {
     private Context context_;
     private Toast_ toast = new Toast_();
     private int state = 0;
+    private boolean after_listen = false;
 
 
     // 构造函数
@@ -83,9 +84,10 @@ public class speaker {
         }
     }
 
-    // 发音方法
-    public void doSpeech(String speech)
+    // 发音方法-- 完整
+    public void doSpeech(String speech, boolean input_)
     {
+        this.after_listen = input_;
         if(state < 10)
         {
             toast.show(context_, "初始化失败"+state, 800);
@@ -95,6 +97,12 @@ public class speaker {
             if(speech.length() != 0)
                 Tts.startSpeaking(speech,listener);
         }
+    }
+
+    // 发音方法-- 重载的简单版
+    public void doSpeech(String speech)
+    {
+        doSpeech(speech, false);
     }
 
     private SynthesizerListener listener = new SynthesizerListener() {
@@ -125,7 +133,7 @@ public class speaker {
 
         @Override
         public void onCompleted(SpeechError speechError) {
-
+            
         }
 
         @Override
