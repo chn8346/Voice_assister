@@ -539,7 +539,7 @@ public class assistant {
         }
     };
 
-    // 急停语音 todo 急停可能会有问题，先测试再改
+    // 急停语音
     public void stopListener()
     {
         if(mIat.isListening())

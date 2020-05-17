@@ -171,10 +171,24 @@ public class HistoryActivity extends AppCompatActivity {
             Log.d("_ACCESS_Event__", "access_permission: BLIND SERVER IS RUN");
         }
 
-        Intent intent1 = new Intent(this, blind_server.class);
-        startService(intent1);
+        // 盲人模式无障碍服务是自启动自关闭的，不用管，代码注解掉
 
-        Log.d("_ACCESS_Event__", "access_permission: " + isStartAccessibilityService(this, "blind_server"));
+        /*
+        // 盲人模式打开服务，非盲人模式默认关闭服务
+        if(gl.user_mode.equals(constr_share.k_user_mode_Blind)) {
+            Intent intent1 = new Intent(this, blind_server.class);
+            startService(intent1);
+            Log.d("_ACCESS_Event__", "BLIND SERVICE ==== MAIN START ====");
+
+        }
+        else
+        {
+            Intent intent1 = new Intent(this, blind_server.class);
+            stopService(intent1);
+            Log.d("_ACCESS_Event__", "STOP SERVICE: BLIND SERVICE ==== MAIN STOP ====");
+        }*/
+
+        //Log.d("_ACCESS_Event__", "access_permission: " + isStartAccessibilityService(this, "blind_server"));
 
 
         // soter 指纹验证模块

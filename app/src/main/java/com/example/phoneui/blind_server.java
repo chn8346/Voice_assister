@@ -21,6 +21,9 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 import android.widget.Button;
+
+import androidx.annotation.RequiresApi;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
@@ -45,10 +48,16 @@ public class blind_server extends AccessibilityService{
     private int pos_y;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onServiceConnected() {
 
+        globalstate gl = (globalstate) getApplication();
+        if(!gl.user_mode.equals(constr_share.k_user_mode_Blind)) {
+            disableSelf();
+            Log.d("_ACCESS_Event__", "STOP : NOT BLIND SERVICE ==== SELF STOP ====");
+        }
         if (!init_window_manager) {
             init_window_manager = true;
 
@@ -60,7 +69,6 @@ public class blind_server extends AccessibilityService{
             button.setBackgroundColor(Color.BLUE);
             button.setBackgroundResource(R.drawable.bottom_1);
 
-            globalstate gl = (globalstate) getApplication();
             // 设置LayoutParam
             layoutParams = new WindowManager.LayoutParams();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
