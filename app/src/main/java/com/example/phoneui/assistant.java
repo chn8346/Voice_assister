@@ -31,6 +31,8 @@ import com.alibaba.fastjson.*;
 
 
 public class assistant {
+    //全局变量
+    private globalstate gl;
     //上下文
     private Context context_;
     //封装的toast
@@ -69,6 +71,7 @@ public class assistant {
         context_ = context;
         talkList.setLength(0);
         this.view_ = view_;
+        gl = (globalstate) context_.getApplicationContext();
 
         // 状态判断的变量，如果state后续中小于某个值就会无法执行
         state = 0;
@@ -329,6 +332,20 @@ public class assistant {
                     {
                         listen_.append(recognizerResult.getResultString());
                     }
+
+                    // 抬起了talk键自动执行
+                    if(!gl.talk_button_pressed)
+                    {
+                        // 修改主界面的文字，将TextView变成对话框
+                        load_talk(listen_.toString(), view_);
+
+                        // 读出回应（测试模式下为读出使用者的命令）
+                        // TODO 加上非测试的输出
+                        speech_speaker.doSpeech(listen_.toString());
+
+                        // 对命令进行分类
+                        cls_str = classify(listen_.toString());
+                    }
                 }
                 else
                 {
@@ -523,7 +540,7 @@ public class assistant {
     };
 
     // 急停语音 todo 急停可能会有问题，先测试再改
-    private void stopListener()
+    public void stopListener()
     {
         if(mIat.isListening())
         {

@@ -417,7 +417,7 @@ public class HistoryActivity extends AppCompatActivity {
                 if(gl.talk_button_pressed)
                 {
                     gl.talk_button_pressed = false;
-
+                    ass.stopListener();
                 }
                 else {
                     gl.talk_button_pressed = true;
