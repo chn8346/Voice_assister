@@ -95,7 +95,7 @@ public class HistoryActivity extends AppCompatActivity {
         // global state 初始化数据
         gl.update_global_state(file_edit);
 
-        // 华为NLU服务启动
+        // NLU服务启动
         boolean first_use_huawei_nlu_model = true;
         if(gl.HW_nlu_use_time < 1)
         {

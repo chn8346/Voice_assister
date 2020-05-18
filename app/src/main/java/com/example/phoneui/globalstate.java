@@ -5,6 +5,7 @@ import android.util.DisplayMetrics;
 
 import androidx.annotation.NonNull;
 
+import com.alibaba.fastjson.JSONObject;
 import com.huawei.hiai.nlu.sdk.NLUAPIService;
 import com.huawei.hiai.nlu.sdk.OnResultListener;
 import com.iflytek.cloud.Setting;
@@ -54,11 +55,17 @@ public class globalstate extends Application{
     // 废参数
     public boolean startAssistant = true;
 
+    // 包查找
+    public JSONObject app_name_finder;
+    public JSONObject package_name_finder;
+
     // 启动
     @Override
     public void onCreate(){
         super.onCreate();
         Setting.setShowLog(true);
+        app_name_finder = new JSONObject();
+        package_name_finder = new JSONObject();
 
         // 讯飞接口初始化
         SpeechUtility.createUtility(this, "appid=5eb4d530");

@@ -120,7 +120,7 @@ public class blind_server extends AccessibilityService{
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @SuppressLint("SetTextI18n")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -203,6 +203,9 @@ public class blind_server extends AccessibilityService{
     // 指针选定的事件处理
     private void process_hove_enter(AccessibilityEvent event)
     {
+        Log.d("EVE__HOVE", "__" + event.getSource());
+        Log.d("EVE__HOVE", "__" + event.getClassName());
+        Log.d("EVE__HOVE", "__" + event.getPackageName());
 
     }
 
@@ -210,7 +213,8 @@ public class blind_server extends AccessibilityService{
     private void process_announcement(AccessibilityEvent event)
     {
         // 获取应用名称
-        String app = (String) event.getPackageName();
+        String package_name = (String) event.getPackageName();
+        String app_name = gl.app_name_finder.getString(package_name);
         // 暂时读到log里面
         for (CharSequence text : event.getText()) {
             String t = text.toString();
@@ -225,10 +229,11 @@ public class blind_server extends AccessibilityService{
     }
 
     // 更换界面的事件处理
+    @RequiresApi(api = Build.VERSION_CODES.P)
     private void process_window_change(AccessibilityEvent event)
     {
         // todo 提示界面更换
-
+        Log.d("EVE__WIN_CHANGE", "__" + event.getWindowChanges());
     }
 
     @Override

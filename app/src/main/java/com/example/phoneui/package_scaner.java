@@ -16,11 +16,13 @@ public class package_scaner {
     private JSONObject quick_info = new com.alibaba.fastjson.JSONObject();
     private JSONObject quick_rank = new JSONObject();
     private JSONObject quick_rank_back = new JSONObject();
+    private globalstate gl;
 
     public package_scaner(Context context)
     {
         get_info = true;
         context_ = context;
+        gl = (globalstate) context_.getApplicationContext();
         flash();
     }
 
@@ -32,6 +34,8 @@ public class package_scaner {
         quick_rank.clear();
         quick_rank_back.clear();
         quick_info.clear();
+        gl.package_name_finder.clear();
+        gl.app_name_finder.clear();
 
         int len = app_list.size();
         for(int i = 0; i < len; i++)
@@ -42,6 +46,9 @@ public class package_scaner {
             quick_info.put(app_name, package_name);
             quick_rank_back.put(package_name, app_name);
             quick_rank.put(package_name, i);
+
+            gl.app_name_finder.put(package_name, app_name);
+            gl.package_name_finder.put(app_name, package_name);
         }
     }
 
